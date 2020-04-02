@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 
 // This class manages which player behaviour is active or overriding, and call its local functions.
 // Contains basic setup and common functions used by all the player behaviours.
+[RequireComponent(typeof(ThirdPersonOrbitCam),typeof(Rigidbody),typeof(Animator))]
 public class BasicBehaviour : MonoBehaviour
 {
     public Transform playerCamera; // Reference to the camera that focus the player.
@@ -310,13 +312,15 @@ public class BasicBehaviour : MonoBehaviour
     // Check if the player is moving on the horizontal plane.
     public bool IsHorizontalMoving()
     {
-        return h != 0;
+        return Mathf.Abs(h) > Mathf.Epsilon;
+        //return h != 0;
     }
 
     // Check if the player is moving.
     public bool IsMoving()
     {
-        return (h != 0) || (v != 0);
+        return Mathf.Abs(h) > Mathf.Epsilon || Mathf.Abs(v) > Mathf.Epsilon;
+        //return (h != 0) || (v != 0);
     }
 
     // Get the last player direction of facing.
@@ -346,6 +350,7 @@ public class BasicBehaviour : MonoBehaviour
     // Function to tell whether or not the player is on ground.
     public bool IsGrounded()
     {
+        //머리 위에서 아래로 레이를 만들어서
         Ray ray = new Ray(this.transform.position + Vector3.up * 2 * colExtents.x, Vector3.down);
         return Physics.SphereCast(ray, colExtents.x, colExtents.x + 0.2f);
     }

@@ -40,3 +40,13 @@ The following packages were added:
   com.unity.ext.nunit@1.0.0
   com.unity.package-manager-ui@2.2.0
   com.unity.postprocessing@2.1.7
+
+=== Tue Mar 31 11:12:34 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.postprocessing from version 2.1.7 to 2.2.2
+The following packages were removed:
+  com.unity.package-manager-ui@2.2.0

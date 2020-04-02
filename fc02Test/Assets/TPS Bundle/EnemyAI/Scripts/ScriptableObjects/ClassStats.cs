@@ -31,3 +31,5 @@ public class ClassStats : ScriptableObject
 		LONG
 	}
 }
+
+

@@ -9,6 +9,7 @@ public abstract class Action : ScriptableObject
     public abstract void Act(StateController controller);
 
     // The action on enable function, triggered once after a FSM state transition.
+    //ready로 이름을 바꾸면 더 이해가 쉬울 듯 하다.
     public virtual void OnEnableAction(StateController controller)
     {
     }
