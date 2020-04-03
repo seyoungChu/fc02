@@ -105,7 +105,10 @@ public class AimBehaviour : GenericBehaviour
     {
         // Set camera position and orientation to the aim mode parameters.
         if (aim)
+        {
             behaviourManager.GetCamScript.SetTargetOffsets(aimPivotOffset, aimCamOffset);
+        }
+           
     }
 
     // LocalLateUpdate: manager is called here to set player rotation after camera rotates, avoiding flickering.
