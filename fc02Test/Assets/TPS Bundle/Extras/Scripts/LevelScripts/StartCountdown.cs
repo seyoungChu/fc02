@@ -19,7 +19,10 @@ public class StartCountdown : MonoBehaviour
 		{
 			behaviour.enabled = false;
 		}
-		player.GetComponent<BasicBehaviour>().enabled = false;
+        if(player.GetComponent<BasicBehaviour>() != null)
+        {
+            player.GetComponent<BasicBehaviour>().enabled = false;
+        }		
 		fullAlpha = noAlpha = Color.white;
 		noAlpha.a = 0f;
 	}
@@ -42,8 +45,12 @@ public class StartCountdown : MonoBehaviour
 			foreach (GenericBehaviour behaviour in player.GetComponentsInChildren<GenericBehaviour>())
 			{
 				behaviour.enabled = true;
-			}
-			player.GetComponent<BasicBehaviour>().enabled = true;
+            }
+            if(player.GetComponent<BasicBehaviour>() != null)
+            {
+                player.GetComponent<BasicBehaviour>().enabled = true;
+            }
+			
 			GetComponent<TPSBundleTimeTrial>().enabled = true;
 			this.enabled = false;
 		}

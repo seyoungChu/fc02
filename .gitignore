@@ -1,0 +1,11 @@
+fc02Test/Assembly-CSharp.csproj
+fc02Test/Assembly-CSharp-Editor.csproj
+fc02Test/.vs/fc02Test/v15/Server/sqlite3/storage.ide-wal
+fc02Test/.vs/fc02Test/v15/Server/sqlite3/storage.ide-shm
+fc02Test/.vs/fc02Test/v15/Server/sqlite3/storage.ide
+fc02Test/.vs/fc02Test/v15/Server/sqlite3/db.lock
+fc02Test/.vs/fc02Test/DesignTimeBuild/.dtbcache
+fc02Test/Library
+fc02Test/Library/*.*
+fc02Test/obj
+fc02Test/obj/*.*
