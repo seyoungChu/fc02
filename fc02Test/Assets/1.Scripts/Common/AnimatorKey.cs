@@ -19,6 +19,11 @@ namespace FC
         public const string Shooting = "Shooting";
         public const string Reload = "Reload";
         public const string Crouch = "Crouch";
+
+        public const string AngularSpeed = "AngularSpeed";
+        public const string Horizontal = "H";
+        public const string Vertical = "V";
+
     }
 }
 

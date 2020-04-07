@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776fe639f4d384c6e87aea2b5257b532, type: 3}
+  m_Name: EntityTable
+  m_EditorClassIdentifier: 
+  sheets:
+  - name: sheet
+    list:
+    - ID: AK
+      AimOffset:
+      - -23
+      ChangeCoverChance: 30
+      WeaponType: LONG
+      BulletDamage: 9
+      ShotRateFactor: 1.6
+      ShotErrorRate: 0.06
+      Effect_MuzzleFlash: flash
+      Effect_Shot: tracer
+      Effect_Sparks: sparks
+      Effect_BulletHole: bulletHole
+    - ID: PISTOL
+      AimOffset:
+      - -15
+      ChangeCoverChance: 27
+      WeaponType: SHORT
+      BulletDamage: 10
+      ShotRateFactor: 0.5
+      ShotErrorRate: 0.04
+      Effect_MuzzleFlash: flash
+      Effect_Shot: tracer
+      Effect_Sparks: sparks
+      Effect_BulletHole: bulletHole
+    - ID: RIFLE
+      AimOffset:
+      - -23
+      ChangeCoverChance: 33
+      WeaponType: LONG
+      BulletDamage: 9
+      ShotRateFactor: 1.5
+      ShotErrorRate: 0.05
+      Effect_MuzzleFlash: flash
+      Effect_Shot: tracer
+      Effect_Sparks: sparks
+      Effect_BulletHole: bulletHole

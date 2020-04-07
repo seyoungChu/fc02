@@ -22,6 +22,23 @@ namespace FC
             public const string Environment = "Environment";
         }
 
+        public enum LayerIndex
+        {
+            Default = 0,
+            TransparentFX = 1,
+            IgnoreRayCast = 2,
+            Water  = 4,
+            UI = 5,
+            Cover = 8,
+            IgnoreShot = 9,
+            CoverInvisible = 10,
+            Player = 11,
+            Enemy = 12,
+            Bound = 13,
+            Environment = 14,
+            
+        }
+
         public static int GetLayerByName(string layerName)
         {
             return LayerMask.NameToLayer(layerName);

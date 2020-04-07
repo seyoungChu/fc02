@@ -51,7 +51,7 @@ public class EditorHelper
 
 		entittyTemplate = entittyTemplate.Replace("$DATA$", data.ToString());
 		entittyTemplate = entittyTemplate.Replace("$ENUM$", enumName);
-		string folderPath = "Assets/0.Scripts_lecture/GameData/";
+		string folderPath = "Assets/1.Scripts/GameData/";
 		if (Directory.Exists(folderPath) == false)
 		{
 			Directory.CreateDirectory(folderPath);
