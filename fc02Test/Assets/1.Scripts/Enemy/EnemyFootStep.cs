@@ -7,7 +7,8 @@ namespace FC
 {
     public class EnemyFootStep : MonoBehaviour
     {
-        public AudioClip[] stepClips;
+        //public AudioClip[] stepClips;
+        public SoundList[] stepSoundLists;
 
         private int index;
         private Animator anim;
@@ -53,9 +54,10 @@ namespace FC
             int oldIndex = index;
             while (oldIndex == index)
             {
-                index = Random.Range(0, stepClips.Length);
+                index = Random.Range(0, stepSoundLists.Length);
             }
-            AudioSource.PlayClipAtPoint(stepClips[index], transform.position, 0.1f);
+            //AudioSource.PlayClipAtPoint(stepSoundLists[index], transform.position, 0.1f);
+            SoundManager.Instance.PlayOneShotEffect((int)stepSoundLists[index],transform.position, 0.1f);
         }
 
         void OnAnimatorIK()

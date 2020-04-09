@@ -47,8 +47,6 @@ public class EffectData : BaseData
 						case "effectType": this.effectClips[currentID].effectType = (EffectType)Enum.Parse(typeof(EffectType), reader.ReadString()); break;
 						case "effectName": this.effectClips[currentID].effectName = reader.ReadString(); break;
 						case "effectPath": this.effectClips[currentID].effectPath = reader.ReadString(); break;
-						case "beHitEffectPath": this.effectClips[currentID].beHitEffect_Path = reader.ReadString(); break;
-
 					}
 				}
 			}
@@ -75,7 +73,6 @@ public class EffectData : BaseData
 				xml.WriteElementString("effectType", clip.effectType.ToString());
 				xml.WriteElementString("effectName", clip.effectName);
 				xml.WriteElementString("effectPath", clip.effectPath);
-				xml.WriteElementString("beHitEffectPath", clip.beHitEffect_Path);
 
 				xml.WriteEndElement();
 			}

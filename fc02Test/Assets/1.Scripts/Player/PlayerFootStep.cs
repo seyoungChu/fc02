@@ -6,8 +6,8 @@ namespace FC
 {
     public class PlayerFootStep : MonoBehaviour
     {
-        public AudioClip[] stepClips;
-
+        //public AudioClip[] stepClips;
+        public SoundList[] stepSounds;
         private Animator myAnimator;
         private int index;
         private Transform lFoot, rFoot;
@@ -94,10 +94,11 @@ namespace FC
             int oldIndex = index;
             while (oldIndex == index)
             {
-                index = (int)Random.Range(0, stepClips.Length - 1);
+                index = (int)Random.Range(0, stepSounds.Length - 1);
             }
 
-            AudioSource.PlayClipAtPoint(stepClips[index], transform.position, 0.2f);
+            //AudioSource.PlayClipAtPoint(stepSounds[index], transform.position, 0.2f);
+            SoundManager.Instance.PlayOneShotEffect((int)stepSounds[index],transform.position,0.2f);
         }
     }
 }

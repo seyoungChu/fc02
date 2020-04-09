@@ -142,31 +142,31 @@ public class EffectTool : EditorWindow
 									EffectTool.effectData.effectClips[selection].effectPath = EditorHelper.GetPath(this.effectSource);
 									EffectTool.effectData.effectClips[selection].effectName = this.effectSource.name;
                                     //EffectTool.effectData.effectClips[selection].effect_sound = (SoundList)EditorGUILayout.EnumPopup("사운드.", EffectTool.effectData.effectClips[selection].effect_sound, GUILayout.Width(this.uiWidth300 * 1.5f));
-                                    
-									if (eType != EffectType.NORMAL)
-                                    {
-                                                                      
-										if (this.beShotSource == null && EffectTool.effectData.effectClips[selection].beHitEffect_Path != string.Empty)
-                                        {
-											this.beShotSource = EffectTool.effectData.effectClips[selection].beHitEffect_Prefab;//Resources.Load(EffectTool.effectData.effectClips[selection].beShot_effect) as GameObject;
-                                        }
-                                        this.beShotSource = (GameObject)EditorGUILayout.ObjectField("피격이펙트.", this.beShotSource, typeof(GameObject), false, GUILayout.Width(this.uiWidth300 * 1.5f));
-                                        if (beShotSource != null)
-                                        {
-											EffectTool.effectData.effectClips[selection].beHitEffect_Path = EditorHelper.GetPath(this.beShotSource) + this.beShotSource.name;
-											if (this.beShotSource != EffectTool.effectData.effectClips[selection].beHitEffect_Prefab)
-                                            {
-                                                EffectTool.effectData.effectClips[selection].PreLoad();
-                                            }
-                                            //EffectTool.effectData.effectClips[selection].beshot_sound = (SoundList)EditorGUILayout.EnumPopup("피격사운드.", EffectTool.effectData.effectClips[selection].beshot_sound, GUILayout.Width(this.uiWidth300));
-
-                                        }
-                                        else
-                                        {
-											EffectTool.effectData.effectClips[selection].beHitEffect_Path = string.Empty;
-											EffectTool.effectData.effectClips[selection].beHitEffect_Prefab = null;
-                                        }
-                                    }
+         //                            
+									// if (eType != EffectType.NORMAL)
+         //                            {
+         //                                                              
+									// 	if (this.beShotSource == null && EffectTool.effectData.effectClips[selection].beHitEffect_Path != string.Empty)
+         //                                {
+									// 		this.beShotSource = EffectTool.effectData.effectClips[selection].beHitEffect_Prefab;//Resources.Load(EffectTool.effectData.effectClips[selection].beShot_effect) as GameObject;
+         //                                }
+         //                                this.beShotSource = (GameObject)EditorGUILayout.ObjectField("피격이펙트.", this.beShotSource, typeof(GameObject), false, GUILayout.Width(this.uiWidth300 * 1.5f));
+         //                                if (beShotSource != null)
+         //                                {
+									// 		EffectTool.effectData.effectClips[selection].beHitEffect_Path = EditorHelper.GetPath(this.beShotSource) + this.beShotSource.name;
+									// 		if (this.beShotSource != EffectTool.effectData.effectClips[selection].beHitEffect_Prefab)
+         //                                    {
+         //                                        EffectTool.effectData.effectClips[selection].PreLoad();
+         //                                    }
+         //                                    //EffectTool.effectData.effectClips[selection].beshot_sound = (SoundList)EditorGUILayout.EnumPopup("피격사운드.", EffectTool.effectData.effectClips[selection].beshot_sound, GUILayout.Width(this.uiWidth300));
+         //
+         //                                }
+         //                                else
+         //                                {
+									// 		EffectTool.effectData.effectClips[selection].beHitEffect_Path = string.Empty;
+									// 		EffectTool.effectData.effectClips[selection].beHitEffect_Prefab = null;
+         //                                }
+         //                            }
 
 
                                     

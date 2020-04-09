@@ -1,8 +1,25 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectManager : MonoBehaviour
+public class EffectManager : SingletonMonobehaviour<EffectManager>
 {
-    
+    private Transform effctPoolRoot = null;
+
+    private void Start()
+    {
+        if (effctPoolRoot == null)
+        {
+            effctPoolRoot = new GameObject("EffectRoot").transform;
+            effctPoolRoot.SetParent(transform);
+        }
+        
+    }
+
+    public GameObject EffectOneShot(int index, Vector3 position)
+    {
+        EffectClip clip = DataManager.EffectData().GetCopy(index);
+        return clip.Instantiate(position);
+    }
 }

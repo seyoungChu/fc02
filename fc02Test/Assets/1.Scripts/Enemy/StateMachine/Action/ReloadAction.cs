@@ -17,6 +17,7 @@ namespace FC
                 controller.reloading = true;
                 // Play weapon reloading sound clip.
                 //AudioSource.PlayClipAtPoint(controller.classStats.reloadSound, controller.enemyAnimation.gunMuzzle.position, 2f);
+                SoundManager.Instance.PlayOneShotEffect((int)SoundList.reloadWeapon,controller.enemyAnimation.gunMuzzle.position,2f);
             }
         }
     }

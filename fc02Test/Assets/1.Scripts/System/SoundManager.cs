@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using System;
+using NPOI.SS.Formula.Functions;
 
-public class SoundManager : MonoBehaviour
+public class SoundManager : SingletonMonobehaviour<SoundManager>
 {
     public const string MasteGroupName = "Master";
     public const string EffectGroupName = "Effect";
@@ -19,7 +20,14 @@ public class SoundManager : MonoBehaviour
     public const string BGMVolumeParam = "Volume_BGM";
     public const string UIVolumeParam = "Volume_UI";
 
-    public enum MusicPlayingtype { None = 0, SourceA = 1, SourceB = 2, AtoB = 3, BtoA = 4 }
+    public enum MusicPlayingtype
+    {
+        None = 0,
+        SourceA = 1,
+        SourceB = 2,
+        AtoB = 3,
+        BtoA = 4
+    }
 
     public AudioMixer mixer = null;
     public Transform audioRoot = null;
@@ -41,7 +49,7 @@ public class SoundManager : MonoBehaviour
     private float lastUIVolume = 0.0f;
     private float lastBGMVolume = 0.0f;
 
-    private AudioListener audioListener = null;
+    //private AudioListener audioListener = null;
 
     private void Start()
     {
@@ -49,12 +57,14 @@ public class SoundManager : MonoBehaviour
         {
             this.mixer = Resources.Load(MixerName) as AudioMixer;
         }
+
         if (this.audioRoot == null)
         {
             this.audioRoot = new GameObject(ContainerName).transform;
             this.audioRoot.SetParent(transform);
             this.audioRoot.localPosition = Vector3.zero;
         }
+
         if (this.fadeA_audio == null)
         {
             GameObject fadeA_GO = new GameObject(FadeA, typeof(AudioSource));
@@ -62,6 +72,7 @@ public class SoundManager : MonoBehaviour
             this.fadeA_audio = fadeA_GO.GetComponent<AudioSource>();
             this.fadeA_audio.playOnAwake = false;
         }
+
         if (this.fadeB_audio == null)
         {
             GameObject fadeB_GO = new GameObject(FadeB, typeof(AudioSource));
@@ -69,6 +80,7 @@ public class SoundManager : MonoBehaviour
             this.fadeB_audio = fadeB_GO.GetComponent<AudioSource>();
             this.fadeB_audio.playOnAwake = false;
         }
+
         if (this.UI_audio == null)
         {
             GameObject UI_GO = new GameObject(UI, typeof(AudioSource));
@@ -76,6 +88,7 @@ public class SoundManager : MonoBehaviour
             this.UI_audio = UI_GO.GetComponent<AudioSource>();
             this.UI_audio.playOnAwake = false;
         }
+
         if (this.effect_audios == null || this.effect_audios.Length == 0)
         {
             this.effect_PlayStartTime = new float[EffectChannelCount];
@@ -89,6 +102,7 @@ public class SoundManager : MonoBehaviour
                 this.effect_audios[i].playOnAwake = false;
             }
         }
+
         if (this.mixer != null)
         {
             this.fadeA_audio.outputAudioMixerGroup = mixer.FindMatchingGroups(BGMGroupName)[0];
@@ -99,12 +113,12 @@ public class SoundManager : MonoBehaviour
             {
                 this.effect_audios[i].outputAudioMixerGroup = mixer.FindMatchingGroups(EffectGroupName)[0];
             }
+        }
 
-        }
-        if (this.audioListener == null)
-        {
-            this.audioListener = gameObject.AddComponent<AudioListener>();
-        }
+        // if (this.audioListener == null)
+        // {
+        //     this.audioListener = gameObject.AddComponent<AudioListener>();
+        // }
         //SetBGMVolume,GetBGMVolume -> after.
         VolumeInit();
     }
@@ -117,6 +131,7 @@ public class SoundManager : MonoBehaviour
         this.mixer.SetFloat(BGMVolumeParam, volume);
         PlayerPrefs.SetFloat(BGMVolumeParam, volume);
     }
+
     public float GetBGMVolume()
     {
         if (PlayerPrefs.HasKey(BGMVolumeParam) == true)
@@ -136,6 +151,7 @@ public class SoundManager : MonoBehaviour
         this.mixer.SetFloat(EffectVolumeParam, volume);
         PlayerPrefs.SetFloat(EffectVolumeParam, volume);
     }
+
     public float GetEffectVolume()
     {
         if (PlayerPrefs.HasKey(EffectVolumeParam) == true)
@@ -155,6 +171,7 @@ public class SoundManager : MonoBehaviour
         this.mixer.SetFloat(UIVolumeParam, volume);
         PlayerPrefs.SetFloat(UIVolumeParam, volume);
     }
+
     public float GetUIVolume()
     {
         if (PlayerPrefs.HasKey(UIVolumeParam) == true)
@@ -183,6 +200,7 @@ public class SoundManager : MonoBehaviour
         {
             return;
         }
+
         source.Stop();
         source.clip = clip.GetClip();
         source.volume = volume;
@@ -195,17 +213,26 @@ public class SoundManager : MonoBehaviour
         source.spatialBlend = clip.spatialBlend;
         source.Play();
     }
+
+    void PlayAudioSourceAtPoint(SoundClip clip, Vector3 position, float volume)
+    {
+        AudioSource.PlayClipAtPoint(clip.GetClip(), position, volume);
+    }
+
     public bool IsPlaying()
     {
-        return (int)this.currentPlayingType > 0;
+        return (int) this.currentPlayingType > 0;
     }
+
     public bool IsDifferentSound(SoundClip clip)
     {
         if (clip == null)
         {
             return false;
         }
-        if (this.currentSound != null && this.currentSound.realID == clip.realID && IsPlaying() && this.currentSound.isFadeOut == false)
+
+        if (this.currentSound != null && this.currentSound.realID == clip.realID && IsPlaying() &&
+            this.currentSound.isFadeOut == false)
         {
             return false;
         }
@@ -243,6 +270,7 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+
     public void DoCheck()
     {
         StartCoroutine(CheckProcess());
@@ -268,6 +296,7 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+
     public void FadeIn(int index, float time, Interpolate.EaseType ease)
     {
         this.FadeIn(DataManager.SoundData().GetCopy(index), time, ease);
@@ -288,6 +317,7 @@ public class SoundManager : MonoBehaviour
         {
             return;
         }
+
         if (this.currentPlayingType == MusicPlayingtype.SourceA)
         {
             this.currentSound.DoFade(Time.deltaTime, this.fadeA_audio);
@@ -372,8 +402,8 @@ public class SoundManager : MonoBehaviour
     {
         try
         {
-            SoundList list = (SoundList)Enum.Parse(typeof(SoundList), soundName);
-            this.FadeTo(DataManager.SoundData().GetCopy((int)list), time, ease);
+            SoundList list = (SoundList) Enum.Parse(typeof(SoundList), soundName);
+            this.FadeTo(DataManager.SoundData().GetCopy((int) list), time, ease);
         }
         catch (System.Exception ex)
         {
@@ -388,7 +418,7 @@ public class SoundManager : MonoBehaviour
             this.fadeB_audio.Stop();
             this.lastSound = this.currentSound;
             this.currentSound = clip;
-            PlayAudioSource(this.fadeA_audio, clip, 1.0f);
+            PlayAudioSource(this.fadeA_audio, clip, clip.maxVolume);
             if (this.currentSound.HasLoop())
             {
                 this.isTicking = true;
@@ -405,7 +435,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayUISound(SoundClip clip)
     {
-        PlayAudioSource(this.UI_audio, clip, 1.0f);
+        PlayAudioSource(this.UI_audio, clip, clip.maxVolume);
     }
 
     public void PlayEffectSound(SoundClip clip)
@@ -416,7 +446,7 @@ public class SoundManager : MonoBehaviour
         {
             if (this.effect_audios[i].isPlaying == false)
             {
-                PlayAudioSource(this.effect_audios[i], clip, 1.0f);
+                PlayAudioSource(this.effect_audios[i], clip, clip.maxVolume);
                 this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
                 isPlaySuccess = true;
                 break;
@@ -424,7 +454,7 @@ public class SoundManager : MonoBehaviour
             else if (this.effect_audios[i].clip == clip.GetClip())
             {
                 this.effect_audios[i].Stop();
-                PlayAudioSource(this.effect_audios[i], clip, 1.0f);
+                PlayAudioSource(this.effect_audios[i], clip, clip.maxVolume);
                 this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
                 isPlaySuccess = true;
                 break;
@@ -443,8 +473,72 @@ public class SoundManager : MonoBehaviour
                     selectIndex = i;
                 }
             }
-            PlayAudioSource(this.effect_audios[selectIndex], clip, 1.0f);
+
+            PlayAudioSource(this.effect_audios[selectIndex], clip, clip.maxVolume);
         }
+    }
+
+    public void PlayEffectSound(SoundClip clip, Vector3 position, float volume)
+    {
+        bool isPlaySuccess = false;
+
+        for (int i = 0; i < this.EffectChannelCount; i++)
+        {
+            if (this.effect_audios[i].isPlaying == false)
+            {
+                PlayAudioSourceAtPoint(clip, position, volume);
+                this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
+                isPlaySuccess = true;
+                break;
+            }
+            else if (this.effect_audios[i].clip == clip.GetClip())
+            {
+                this.effect_audios[i].Stop();
+                PlayAudioSourceAtPoint(clip, position, volume);
+                this.effect_PlayStartTime[i] = Time.realtimeSinceStartup;
+                isPlaySuccess = true;
+                break;
+            }
+        }
+
+        if (isPlaySuccess == false)
+        {
+            float maxTime = 0.0f;
+            int selectIndex = 0;
+            for (int i = 0; i < this.EffectChannelCount; i++)
+            {
+                if (this.effect_PlayStartTime[i] > maxTime)
+                {
+                    maxTime = this.effect_PlayStartTime[i];
+                    selectIndex = i;
+                }
+            }
+
+            PlayAudioSourceAtPoint(clip, position, volume);
+        }
+    }
+
+    public void PlayOneShotEffect(int index, Vector3 position, float volume)
+    {
+        if (index == (int) SoundList.None)
+        {
+            return;
+        }
+
+        SoundClip clip = DataManager.SoundData().GetCopy(index);
+        if (clip == null)
+        {
+            Debug.LogWarning("Sound Play Failed");
+            return;
+        }
+
+        PlayEffectSound(clip, position, volume);
+    }
+
+    public void PlayShotSound(string classID, Vector3 position, float volume)
+    {
+        SoundList sound = (SoundList) Enum.Parse(typeof(SoundList), classID.ToLower());
+        PlayOneShotEffect((int) sound, position, volume);
     }
 
     public void PlayOneShot(SoundClip clip)
@@ -454,6 +548,7 @@ public class SoundManager : MonoBehaviour
             Debug.LogWarning("Sound Play Failed");
             return;
         }
+
         switch (clip.playType)
         {
             case SoundPlayType.EFFECT:
@@ -470,10 +565,11 @@ public class SoundManager : MonoBehaviour
 
     public void PlayOneShot(int index)
     {
-        if (index == (int)SoundList.None)
+        if (index == (int) SoundList.None)
         {
             return;
         }
+
         this.PlayOneShot(DataManager.SoundData().GetCopy(index));
     }
 
@@ -481,8 +577,8 @@ public class SoundManager : MonoBehaviour
     {
         try
         {
-            SoundList soundList = (SoundList)Enum.Parse(typeof(SoundList), clipName);
-            this.PlayOneShot((int)soundList);
+            SoundList soundList = (SoundList) Enum.Parse(typeof(SoundList), clipName);
+            this.PlayOneShot((int) soundList);
         }
         catch (System.Exception ex)
         {
@@ -492,7 +588,7 @@ public class SoundManager : MonoBehaviour
 
     public void Stop(bool allStop = false)
     {
-        if(allStop == true)
+        if (allStop == true)
         {
             this.fadeA_audio.Stop();
             this.fadeB_audio.Stop();
@@ -503,5 +599,4 @@ public class SoundManager : MonoBehaviour
         this.isTicking = false;
         StopAllCoroutines();
     }
-
 }

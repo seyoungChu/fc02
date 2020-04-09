@@ -126,7 +126,8 @@ namespace FC
             {
                 if (weapons[activeWeapon].StartReload())
                 {
-                    AudioSource.PlayClipAtPoint(weapons[activeWeapon].reloadSound, gunMuzzle.position, 0.5f);
+                    //AudioSource.PlayClipAtPoint(weapons[activeWeapon].reloadSound, gunMuzzle.position, 0.5f);
+                    SoundManager.Instance.PlayOneShotEffect((int)weapons[activeWeapon].reloadSound,gunMuzzle.position,0.5f);
                     basicBehaviour.GetAnim.SetBool(reloadBool, true);
                 }
             }
@@ -216,7 +217,8 @@ namespace FC
                 }
 
                 // Play shot sound.
-                AudioSource.PlayClipAtPoint(weapons[weapon].shotSound, gunMuzzle.position, 5f);
+                //AudioSource.PlayClipAtPoint(weapons[weapon].shotSound, gunMuzzle.position, 5f);
+                SoundManager.Instance.PlayOneShotEffect((int)weapons[weapon].shotSound, gunMuzzle.position, 5f);
                 // Trigger alert callback
                 GameObject.FindGameObjectWithTag(TagAndLayer.TagName.GameController).SendMessage("RootAlertNearby", ray.origin,
                     SendMessageOptions.DontRequireReceiver);

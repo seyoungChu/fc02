@@ -9,7 +9,7 @@ namespace FC
     public class InteractiveWeapon : MonoBehaviour
     {
         public string label;                                      // The weapon name. Same name will treat weapons as same regardless game object's name.
-        public AudioClip shotSound, reloadSound,                  // Audio clips for shoot and reload.
+        public SoundList shotSound, reloadSound,                  // Audio clips for shoot and reload.
             pickSound, dropSound, noBulletSound;                  // Audio clips for pickweapon , drop weapon, and no bullet shot try.
         public Sprite sprite;                                     // Weapon srpite to show on screen HUD.
         public Vector3 rightHandPosition;                         // Position offsets relative to the player's right hand.
@@ -42,6 +42,7 @@ namespace FC
         private WeaponUIManager weaponHUD;                        // Reference to on-screen weapon HUD.
         private bool pickable;                                    // Boolean to store whether or not the weapon is pickable (player within radius).
         private Transform pickupHUD;                              // Reference to the weapon pickup in-game label.
+        [Tooltip("muzzle Transform")][SerializeField] private Transform muzzleTransform;
 
         void Awake()
         {
@@ -85,6 +86,11 @@ namespace FC
             fullMag = mag;
             maxBullets = totalBullets;
             pickupHUD.gameObject.SetActive(false);
+            if (muzzleTransform == null)
+            {
+                muzzleTransform = transform.Find("muzzle");
+            }
+            
         }
 
         // Create the sphere of interaction with player.
@@ -121,7 +127,8 @@ namespace FC
         {
             if (collision.collider.gameObject != player && Vector3.Distance(transform.position, player.transform.position) <= 5f)
             {
-                AudioSource.PlayClipAtPoint(dropSound, transform.position, 0.5f);
+                //AudioSource.PlayClipAtPoint(dropSound, transform.position, 0.5f);
+                SoundManager.Instance.PlayOneShotEffect((int)dropSound, transform.position, 0.5f);
             }
         }
 
@@ -164,7 +171,8 @@ namespace FC
         {
             if (active)
             {
-                AudioSource.PlayClipAtPoint(pickSound, transform.position, 0.5f);
+                //AudioSource.PlayClipAtPoint(pickSound, transform.position, 0.5f);
+                SoundManager.Instance.PlayOneShotEffect((int)pickSound, transform.position, 0.5f);
             }
                 
             weaponHUD.Toggle(active);
@@ -219,9 +227,10 @@ namespace FC
                 UpdateHUD();
                 return true;
             }
-            if (firstShot && noBulletSound)
+            if (firstShot && noBulletSound != SoundList.None)
             {
-                AudioSource.PlayClipAtPoint(noBulletSound, this.transform.Find("muzzle").position, 5f);
+                //AudioSource.PlayClipAtPoint(noBulletSound, this.transform.Find("muzzle").position, 5f);
+                SoundManager.Instance.PlayOneShotEffect((int)noBulletSound, muzzleTransform.position,5f);
             }
                 
             return false;

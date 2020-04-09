@@ -116,29 +116,29 @@ namespace FC
         {
             
             // Draw muzzle flash.
-            // GameObject muzzleFlash = Object.Instantiate<GameObject>(controller.classStats.muzzleFlash,
-            //     controller.enemyAnimation.gunMuzzle);
-            // muzzleFlash.transform.localPosition = Vector3.zero;
-            // muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
-            // controller.StartCoroutine(this.DestroyFlash(muzzleFlash));
+            GameObject muzzleFlash = EffectManager.Instance.EffectOneShot((int) EffectList.flash,Vector3.zero);
+            muzzleFlash.transform.SetParent(controller.enemyAnimation.gunMuzzle);
+            muzzleFlash.transform.localPosition = Vector3.zero;
+            muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
+            DestroyDelayed delayed = muzzleFlash.AddComponent<DestroyDelayed>();
+            delayed.DelayedTime = 0.1f;
 
             // Draw shot tracer and smoke.
-            // GameObject shotTracer =
-            //     Object.Instantiate<GameObject>(controller.classStats.shot, controller.enemyAnimation.gunMuzzle);
-            // // Padding to start shot tracer
-            // Vector3 origin = controller.enemyAnimation.gunMuzzle.position -
-            //                  controller.enemyAnimation.gunMuzzle.right * 0.5f;
-            // shotTracer.transform.position = origin;
-            // shotTracer.transform.rotation = Quaternion.LookRotation(direction);
+            GameObject shotTracer = EffectManager.Instance.EffectOneShot((int) EffectList.tracer, Vector3.zero);
+            shotTracer.transform.SetParent(controller.enemyAnimation.gunMuzzle);
+            Vector3 origin = controller.enemyAnimation.gunMuzzle.position -
+                             controller.enemyAnimation.gunMuzzle.right * 0.5f;
+            shotTracer.transform.position = origin;
+            shotTracer.transform.rotation = Quaternion.LookRotation(direction);
 
             // Draw bullet hole and sparks, if target is not organic.
             if (target && !organic)
             {
-                // GameObject bulletHole = Instantiate(controller.classStats.bulletHole);
-                // bulletHole.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
-                // bulletHole.transform.position = hitPoint + 0.01f * hitNormal;
-                // GameObject instantSparks = Object.Instantiate<GameObject>(controller.classStats.sparks);
-                // instantSparks.transform.position = hitPoint;
+                GameObject bulletHole =
+                    EffectManager.Instance.EffectOneShot((int) EffectList.bulletHole, hitPoint + 0.01f * hitNormal);
+                bulletHole.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
+
+                GameObject instantSparks = EffectManager.Instance.EffectOneShot((int) EffectList.sparks, hitPoint);
             }
             // The object hit is organic, call take damage function.
             else if (target && organic)
@@ -153,6 +153,7 @@ namespace FC
 
             // Play shot audio clip at shot position.
             //AudioSource.PlayClipAtPoint(controller.classStats.shotSound, controller.enemyAnimation.gunMuzzle.position, 2f);
+            SoundManager.Instance.PlayShotSound(controller.classID,controller.enemyAnimation.gunMuzzle.position, 2f);
         }
 
         // Function to destroy the muzzle flash.
