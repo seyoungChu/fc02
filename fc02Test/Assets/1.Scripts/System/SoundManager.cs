@@ -44,10 +44,10 @@ public class SoundManager : SingletonMonobehaviour<SoundManager>
     private SoundClip lastSound = null;
     private float minVolume = -80.0f;
     private float maxVolume = 0.0f;
-    private bool nowMute = false;
-    private float lastEffectVolume = 0.0f;
-    private float lastUIVolume = 0.0f;
-    private float lastBGMVolume = 0.0f;
+    //private bool nowMute = false;
+    //private float lastEffectVolume = 0.0f;
+    //private float lastUIVolume = 0.0f;
+    //private float lastBGMVolume = 0.0f;
 
     //private AudioListener audioListener = null;
 

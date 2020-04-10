@@ -509,7 +509,7 @@ public class ExcelImporterMaker : EditorWindow
         string templateFilePath = "Assets/Editor/DataTemplate.txt";
         string entittyTemplate = File.ReadAllText(templateFilePath);
         StringBuilder builder = new StringBuilder();
-        bool isInbetweenArray = false;
+        //bool isInbetweenArray = false;
 
         this.DataClassName = className + "Data";
 
@@ -538,7 +538,7 @@ public class ExcelImporterMaker : EditorWindow
         string templateFilePath = "Assets/Editor/TabTemplate.txt";
         string entittyTemplate = File.ReadAllText(templateFilePath);
         StringBuilder builder = new StringBuilder();
-        bool isInbetweenArray = false;
+        //bool isInbetweenArray = false;
 
         this.TabClassName = this.className + "Tab";
 

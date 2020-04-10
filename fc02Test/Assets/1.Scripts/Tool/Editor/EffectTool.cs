@@ -18,7 +18,7 @@ public class EffectTool : EditorWindow
     
     // 이펙트 클립.
     private GameObject effectSource = null;
-    private GameObject beShotSource = null;
+    //private GameObject beShotSource = null;
     // effect data
     private static EffectData effectData;
     
@@ -103,7 +103,7 @@ public class EffectTool : EditorWindow
                                 if (__prev != this.selection)
                                 {
                                     this.effectSource = null;
-                                    this.beShotSource = null;
+                                    //this.beShotSource = null;
                                     
                                 }
                             }
@@ -206,7 +206,7 @@ public class EffectTool : EditorWindow
                 effectData = ScriptableObject.CreateInstance<EffectData>();
                 selection = 0;
                 this.effectSource = null;
-                this.beShotSource = null;
+                //this.beShotSource = null;
                 
             }
             GUI.SetNextControlName("Save");
