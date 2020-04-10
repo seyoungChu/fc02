@@ -5,6 +5,7 @@ using FC;
 
 namespace FC
 {
+    [CreateAssetMenu(menuName = "FC/PluggableAI/State")]
     public class State : ScriptableObject
     {
         [Tooltip("The actions to perform when on the state.")]

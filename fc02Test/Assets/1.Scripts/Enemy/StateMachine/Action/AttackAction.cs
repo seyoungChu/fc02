@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Attack")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Attack")]
     public class AttackAction : Action
     {
         private readonly float startShootDelay = 0.2f; // Delay before start shooting.

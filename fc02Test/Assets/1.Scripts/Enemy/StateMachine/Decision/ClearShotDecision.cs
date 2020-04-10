@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Clear Shot")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Clear Shot")]
     public class ClearShotDecision : Decision
     {
         [Header("Extra Decisions")]

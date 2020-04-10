@@ -46,7 +46,7 @@ namespace FC
                 fadeImg.color = Color.clear;
                 fadeImg.enabled = false;
                 sceneStarting = false;
-                transform.root.GetComponent<StartCountdown>().enabled = true;
+                transform.root.GetComponent<StartCountDown>().enabled = true;
             }
         }
 

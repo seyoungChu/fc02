@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Search")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Search")]
     public class SearchAction : Action
     {
         // The act function, called on Update() (State controller - current state - action).

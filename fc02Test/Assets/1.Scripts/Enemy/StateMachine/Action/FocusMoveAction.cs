@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Focus Move")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Focus Move")]
     public class FocusMoveAction : Action
     {
         [Tooltip("The aim toggle decision while on focus.")]

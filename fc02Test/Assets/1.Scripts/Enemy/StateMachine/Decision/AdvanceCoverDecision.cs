@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Advance Cover")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Advance Cover")]
     public class AdvanceCoverDecision : Decision
     {
         public int waitRounds = 1; // Engaging rounds to wait before consider advancing.

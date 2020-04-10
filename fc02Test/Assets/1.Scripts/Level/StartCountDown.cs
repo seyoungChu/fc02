@@ -72,7 +72,7 @@ namespace FC
                     player.GetComponent<BasicBehaviour>().enabled = true;
                 }
 
-                GetComponent<TPSBundleTimeTrial>().enabled = true;
+                GetComponent<TimeTrial>().enabled = true;
                 this.enabled = false;
             }
         }

@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Target Dead")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Target Dead")]
     public class TargetDeadDecision : Decision
     {
         public override bool Decide(StateController controller)

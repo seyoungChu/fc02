@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Hear")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Hear")]
     public class HearDecision : Decision
     {
         private Vector3 lastPos, currentPos;   // Last and current evidence positions.

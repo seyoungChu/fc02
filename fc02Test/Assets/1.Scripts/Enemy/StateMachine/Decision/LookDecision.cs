@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Look")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Look")]
     public class LookDecision : Decision
     {
         // The decide function, called on Update() (State controller - current state - transition - decision).

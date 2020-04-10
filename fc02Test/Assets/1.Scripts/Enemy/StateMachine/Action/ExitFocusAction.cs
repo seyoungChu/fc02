@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Exit Focus")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Exit Focus")]
     public class ExitFocusAction : Action
     {
         public override void Act(StateController controller)

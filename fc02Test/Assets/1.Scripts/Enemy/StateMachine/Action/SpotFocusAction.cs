@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Spot Focus")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Spot Focus")]
     public class SpotFocusAction : Action
     {
         // The act function, called on Update() (State controller - current state - action).

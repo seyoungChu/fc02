@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Take Cover")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Take Cover")]
     public class TakeCoverDecision : Decision
     {
         // The decide function, called on Update() (State controller - current state - transition - decision).

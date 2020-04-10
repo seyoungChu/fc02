@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Reached Point")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Reached Point")]
     public class ReachedPointDecision : Decision
     {
         // The decide function, called on Update() (State controller - current state - transition - decision).

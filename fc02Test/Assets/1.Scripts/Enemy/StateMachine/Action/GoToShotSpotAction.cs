@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Go To Shot Spot")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Go To Shot Spot")]
     public class GoToShotSpotAction : Action
     {
         // The act function, called on Update() (State controller - current state - action).

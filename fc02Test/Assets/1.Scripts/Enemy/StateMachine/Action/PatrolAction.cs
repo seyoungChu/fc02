@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Patrol")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Patrol")]
     public class PatrolAction : Action
     {
 

@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Find Cover")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Find Cover")]
     public class FindCoverAction : Action
     {
         // The act function, called on Update() (State controller - current state - action).

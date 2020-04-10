@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/End Burst")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/End Burst")]
     public class EndBurstDecision : Decision
     {
         public override bool Decide(StateController controller)

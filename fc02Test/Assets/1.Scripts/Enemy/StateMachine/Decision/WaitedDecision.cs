@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Waited")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Waited")]
     public class WaitedDecision : Decision
     {
         public float maxTimeToWait;  // Maximum time to wait on a round.

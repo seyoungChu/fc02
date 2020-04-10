@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Reload")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Reload")]
     public class ReloadAction : Action
     {
         public override void Act(StateController controller)

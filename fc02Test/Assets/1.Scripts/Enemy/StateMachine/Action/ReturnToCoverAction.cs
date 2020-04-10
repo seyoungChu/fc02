@@ -6,7 +6,7 @@ using FC;
 namespace FC
 {
     // The return to cover spot action.
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Return to Cover")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Return to Cover")]
     public class ReturnToCoverAction : Action
     {
         // The act function, called on Update() (State controller - current state - action).

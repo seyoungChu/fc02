@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Actions/Take Cover")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Take Cover")]
     public class TakeCoverAction : Action
     {
         private readonly int coverMin = 2;  // Minimum period to stay on cover.

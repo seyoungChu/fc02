@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Focus")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Focus")]
     public class FocusDecision : Decision
     {
         [Tooltip("Which sense radius will be used?")]

@@ -5,7 +5,7 @@ using FC;
 
 namespace FC
 {
-    [CreateAssetMenu(menuName = "PluggableAI/Decisions/Feel Alert")]
+    [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Feel Alert")]
     public class FeelAlertDecision : Decision
     {
         public override bool Decide(StateController controller)
