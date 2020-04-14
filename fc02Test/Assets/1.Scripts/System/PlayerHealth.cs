@@ -13,7 +13,7 @@ namespace FC
         //public AudioClip deathClip;
         //public AudioClip[] hitClips;
         public SoundList deathSound;
-        public SoundList[] hitSounds;
+        public SoundList hitSound;
         public GameObject hurtPrefab;
         public float decayFactor = 0.8f;
 
@@ -74,7 +74,7 @@ namespace FC
             }
 
             //AudioSource.PlayClipAtPoint(hitClips[Random.Range(0, hitClips.Length)], location, 0.1f);
-            SoundManager.Instance.PlayOneShotEffect((int)(hitSounds[Random.Range(0,hitSounds.Length-1)]), location, 0.1f);
+            SoundManager.Instance.PlayOneShotEffect((int)hitSound, location, 0.1f);
             
         }
 

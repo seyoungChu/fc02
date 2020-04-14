@@ -53,7 +53,7 @@ namespace FC
         {
             enemies = 0;
             foreach (GameObject enemy in allEnemies)
-                if (enemy.activeSelf && !enemy.GetComponent<HealthManager>().dead)
+                if (enemy.activeSelf && !enemy.GetComponent<HealthBase>().dead)
                     enemies++;
 
             if (isTimerRunning)

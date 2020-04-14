@@ -5918,6 +5918,11 @@ PrefabInstance:
       propertyPath: patrolWayPoints.Array.data[3]
       value: 
       objectReference: {fileID: 186412649}
+    - target: {fileID: 5795597572232699587, guid: 17a5fd789535dc94b80bf78ffb0ea097,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5795597572935021597, guid: 17a5fd789535dc94b80bf78ffb0ea097,
         type: 3}
       propertyPath: m_ConnectedAnchor.x

@@ -29,12 +29,15 @@ namespace FC
         // Can the NPC shoot?
         private bool CanShoot(StateController controller)
         {
+            float distance = (controller.personalTarget - controller.enemyAnimation.gunMuzzle.position).sqrMagnitude;
             // NPC is aiming and almost aligned with desired position?
             if (controller.Aiming &&
                 (controller.enemyAnimation.currentAimAngleGap < aimAngleGap ||
                  // Or if the target is too close, shot anyway
-                 (controller.personalTarget - controller.enemyAnimation.gunMuzzle.position).sqrMagnitude <= 0.25f))
+                 distance <= 25.0f))
             {
+                // Debug.LogWarning("Can Shoot aiming : " + controller.Aiming.ToString()+" currentGap : "+controller.enemyAnimation.currentAimAngleGap.ToString() + " aimAngleGap :  " + aimAngleGap.ToString()
+                //           + "  distance : " + distance.ToString());
                 // All conditions match, check start delay.
                 if (controller.variables.startShootTimer >= startShootDelay)
                 {
@@ -44,6 +47,11 @@ namespace FC
                 {
                     controller.variables.startShootTimer += Time.deltaTime;
                 }
+            }
+            else
+            {
+                // Debug.Log("No Shoot aiming : " + controller.Aiming.ToString()+" currentGap : "+controller.enemyAnimation.currentAimAngleGap.ToString() + " aimAngleGap :  " + aimAngleGap.ToString()
+                //                  + "  distance : " + distance.ToString());
             }
 
             return false;
@@ -119,15 +127,15 @@ namespace FC
             GameObject muzzleFlash = EffectManager.Instance.EffectOneShot((int) EffectList.flash,Vector3.zero);
             muzzleFlash.transform.SetParent(controller.enemyAnimation.gunMuzzle);
             muzzleFlash.transform.localPosition = Vector3.zero;
-            muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
+            muzzleFlash.transform.localEulerAngles = Vector3.left * 90f; //back 0.0.-1
             DestroyDelayed delayed = muzzleFlash.AddComponent<DestroyDelayed>();
-            delayed.DelayedTime = 0.1f;
+            delayed.DelayedTime = 0.5f;
 
             // Draw shot tracer and smoke.
             GameObject shotTracer = EffectManager.Instance.EffectOneShot((int) EffectList.tracer, Vector3.zero);
             shotTracer.transform.SetParent(controller.enemyAnimation.gunMuzzle);
-            Vector3 origin = controller.enemyAnimation.gunMuzzle.position -
-                             controller.enemyAnimation.gunMuzzle.right * 0.5f;
+            Vector3 origin = controller.enemyAnimation.gunMuzzle.position;// -
+                             //controller.enemyAnimation.gunMuzzle.right * 0.5f; // right 1,0,0
             shotTracer.transform.position = origin;
             shotTracer.transform.rotation = Quaternion.LookRotation(direction);
 
@@ -143,7 +151,7 @@ namespace FC
             // The object hit is organic, call take damage function.
             else if (target && organic)
             {
-                HealthManager targetHealth = target.GetComponent<HealthManager>();
+                HealthBase targetHealth = target.GetComponent<HealthBase>();
                 if (targetHealth)
                 {
                     targetHealth.TakeDamage(hitPoint, direction, controller.classStats.BulletDamage,

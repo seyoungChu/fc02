@@ -201,7 +201,7 @@ namespace FC
                         // Call the damage behaviour of target if exists.
                         if (hit.collider)
                         {
-                            hit.collider.SendMessageUpwards("HitCallback", new HealthManager.DamageInfo(
+                            hit.collider.SendMessageUpwards("HitCallback", new HealthBase.DamageInfo(
                                     hit.point, ray.direction, weapons[weapon].bulletDamage, hit.collider),
                                 SendMessageOptions.DontRequireReceiver);
                         }

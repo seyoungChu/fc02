@@ -91,6 +91,12 @@ namespace FC
             if (controller.Aiming)
             {
                 // Calculate desired rotation.
+                Vector3 direction = controller.personalTarget - spine.position;
+                //look ration은 너무 작은 벡터를 주면 0으로 나누는 것 같은 적절치 못한 수행 오류가 발생합니다.
+                if (direction.magnitude < 0.01f || direction.magnitude > 100000.0f)
+                {
+                    return;
+                }
                 Quaternion targetRotation = Quaternion.LookRotation(controller.personalTarget - spine.position);
                 // Apply parent bones initial rotation offsets
                 targetRotation *= Quaternion.Euler(initialRootRotation);
@@ -116,7 +122,7 @@ namespace FC
                     if (timeCountAim == 0 && Quaternion.Angle(frameRotation, hips.rotation) > 70f)
                     {
                         // Stop aiming and aim again after body realignment (1 second interval).
-                        StartCoroutine(controller.UnstuckAim(1f));
+                        StartCoroutine(controller.UnstuckAim(2f));
                     }
 
                     // No over twist, freeze spine rotation until the desired one is 60 degrees or less, relative to hips.
@@ -129,7 +135,7 @@ namespace FC
 
                 // Measure remain angle gap to desired aim orientation.
                 Vector3 target = controller.personalTarget - gunMuzzle.position;
-                Vector3 fwd = -gunMuzzle.right;
+                Vector3 fwd = gunMuzzle.forward; //-right
                 currentAimAngleGap = Vector3.Angle(target, fwd);
 
                 timeCountGuard = 0;
@@ -202,12 +208,14 @@ namespace FC
         // Set aim animation start as pending (called externally).
         public void ActivatePendingAim()
         {
+            Debug.Log("Active Pending Aim");
             pendingAim = true;
         }
 
         // Abort aim animation start.
         public void AbortPendingAim()
         {
+            Debug.LogWarning("Disable Pending Aim");
             pendingAim = false;
             controller.Aiming = false;
         }

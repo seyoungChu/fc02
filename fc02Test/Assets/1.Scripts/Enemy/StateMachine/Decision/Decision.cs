@@ -22,7 +22,7 @@ namespace FC
         public static bool CheckTargetsInRadius(StateController controller, float radius, HandeTargets handleTargets)
         {
             // Target is dead, ignore sense triggers.
-            if (controller.aimTarget.root.GetComponent<HealthManager>().dead)
+            if (controller.aimTarget.root.GetComponent<HealthBase>().dead)
                 return false;
             // Target is alive.
             else

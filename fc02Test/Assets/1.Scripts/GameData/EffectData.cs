@@ -128,12 +128,12 @@ public class EffectData : BaseData
 			return null;
 		}
 
-		EffectClip clip = new EffectClip();
-		clip.realID = index;
+		//EffectClip clip = new EffectClip();
+		//clip.realID = index;
+		effectClips[index].PreLoad();
 
-
-		clip.PreLoad();
-		return clip;
+		//clip.PreLoad();
+		return effectClips[index];
 	}
 
 	public override void Copy(int index)
