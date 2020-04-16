@@ -34,7 +34,7 @@ namespace FC
             if (controller.Aiming &&
                 (controller.enemyAnimation.currentAimAngleGap < aimAngleGap ||
                  // Or if the target is too close, shot anyway
-                 distance <= 25.0f))
+                 distance <= 5.0f))
             {
                 // Debug.LogWarning("Can Shoot aiming : " + controller.Aiming.ToString()+" currentGap : "+controller.enemyAnimation.currentAimAngleGap.ToString() + " aimAngleGap :  " + aimAngleGap.ToString()
                 //           + "  distance : " + distance.ToString());
