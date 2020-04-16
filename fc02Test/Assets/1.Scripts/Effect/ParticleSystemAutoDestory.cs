@@ -13,6 +13,7 @@ namespace FC
         {
             // Set up the references.
             ps = GetComponent<ParticleSystem>();
+            
         }
 
         public void Update()

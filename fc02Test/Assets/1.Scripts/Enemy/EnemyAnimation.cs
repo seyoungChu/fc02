@@ -208,14 +208,12 @@ namespace FC
         // Set aim animation start as pending (called externally).
         public void ActivatePendingAim()
         {
-            Debug.Log("Active Pending Aim");
             pendingAim = true;
         }
 
         // Abort aim animation start.
         public void AbortPendingAim()
         {
-            Debug.LogWarning("Disable Pending Aim");
             pendingAim = false;
             controller.Aiming = false;
         }

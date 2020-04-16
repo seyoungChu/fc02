@@ -10,7 +10,7 @@ namespace FC
     {
         private Slider slider;
         private ThirdPersonOrbitCam cam;
-
+        
         public void Start()
         {
             cam = Camera.main.GetComponent<ThirdPersonOrbitCam>();

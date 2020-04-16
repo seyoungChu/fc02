@@ -29,7 +29,15 @@ public class SingletonMonobehaviour<T> : MonoBehaviour where T : Component
         m_instance = this as T;
         if (Application.isPlaying == true)
         {
-            DontDestroyOnLoad(gameObject);
+            if (transform.parent != null && transform.root != null)
+            {
+                DontDestroyOnLoad(transform.root.gameObject);
+            }
+            else
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+            
         }
     }
 }
