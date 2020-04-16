@@ -8151,7 +8151,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6533766453129133514}
   - component: {fileID: 6533766453129133508}
-  - component: {fileID: 6533766453129133515}
+  - component: {fileID: 6533766453042088826}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -8243,7 +8243,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 0
---- !u!114 &6533766453129133515
+--- !u!114 &6533766453042088826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8252,7 +8252,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6533766453129133513}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b45e827f70bd5b409f038cb084b314c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8727800200a024398a43e50609177d45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6533766453134521575
