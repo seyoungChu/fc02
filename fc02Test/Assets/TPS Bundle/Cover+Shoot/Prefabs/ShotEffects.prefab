@@ -4856,7 +4856,7 @@ GameObject:
   - component: {fileID: 4454476570142760}
   - component: {fileID: 198492380359436870}
   - component: {fileID: 199555675496373286}
-  - component: {fileID: 3018684094079998959}
+  - component: {fileID: 6389103026382630424}
   m_Layer: 2
   m_Name: tracer
   m_TagString: Untagged
@@ -9533,7 +9533,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &3018684094079998959
+--- !u!114 &6389103026382630424
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9542,7 +9542,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1400678216351876}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76e19f721bbf4b041aa0df24494d0f0f, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a040af92987a4923a3220cd5af76859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1474217957955566
@@ -14312,7 +14312,7 @@ GameObject:
   - component: {fileID: 4524295428221722}
   - component: {fileID: 198625178463248452}
   - component: {fileID: 199391929924299170}
-  - component: {fileID: 2525610037343128349}
+  - component: {fileID: 8318466393397339432}
   m_Layer: 2
   m_Name: sparks
   m_TagString: Untagged
@@ -18989,7 +18989,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &2525610037343128349
+--- !u!114 &8318466393397339432
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -18998,6 +18998,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1915464183435544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76e19f721bbf4b041aa0df24494d0f0f, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a040af92987a4923a3220cd5af76859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
