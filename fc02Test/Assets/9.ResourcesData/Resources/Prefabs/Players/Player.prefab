@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &358561942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 358561943}
+  m_Layer: 11
+  m_Name: Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &358561943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358561942}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.35, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3243383473808150070}
+  m_RootOrder: 22
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3247522866340137754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,6 +1039,7 @@ Transform:
   - {fileID: 3250860823346985536}
   - {fileID: 3250819021232597336}
   - {fileID: 3243301660235641462}
+  - {fileID: 358561943}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1057,7 +1088,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 7a665289b8701a143a4d81cc38730390, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.28
+  m_Radius: 0.38
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.89, z: 0}
@@ -1091,7 +1122,7 @@ MonoBehaviour:
   criticalHealth: 30
   healthHUD: {fileID: 0}
   deathSound: 0
-  hitSounds: 
+  hitSound: 0
   hurtPrefab: {fileID: 5542824109845126322, guid: 96c82f1df8075f24aa60ec228a6b40dc,
     type: 3}
   decayFactor: 0.8
@@ -1113,7 +1144,7 @@ MonoBehaviour:
     type: 3}
   shot: {fileID: 7050756295436598934, guid: 25b7638fca7fd4ca4b660d5154d495a3, type: 3}
   sparks: {fileID: 1582818038116428783, guid: 405a5397d25c848a7b671fe12edc5b70, type: 3}
-  bulletHole: {fileID: 2100000, guid: fdb2b6148660d8d44968ea5b7eeb491e, type: 2}
+  bulletHole: {fileID: 2100000, guid: 07822d37515343940a5dde7b6c86a125, type: 2}
   maxBulletHoles: 50
   shotErrorRate: 0.01
   shotRateFactor: 1
