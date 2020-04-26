@@ -11,7 +11,7 @@ namespace FC
     {
         void OnSceneGUI()
         {
-            Debug.Log("?! FieldOfViewEditor OnSceneGUI Called");
+            //Debug.Log("?! FieldOfViewEditor OnSceneGUI Called");
             FC.StateController fov = target as FC.StateController;
             if (fov == null || fov.gameObject == null)
             {
