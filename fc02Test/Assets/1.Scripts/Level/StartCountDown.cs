@@ -27,9 +27,9 @@ namespace FC
                 behaviour.enabled = false;
             }
 
-            if (player.GetComponent<BasicBehaviour>() != null)
+            if (player.GetComponent<BehaviourController>() != null)
             {
-                player.GetComponent<BasicBehaviour>().enabled = false;
+                player.GetComponent<BehaviourController>().enabled = false;
             }
 
             fullAlpha = noAlpha = Color.white;
@@ -67,9 +67,9 @@ namespace FC
                     behaviour.enabled = true;
                 }
 
-                if (player.GetComponent<BasicBehaviour>() != null)
+                if (player.GetComponent<BehaviourController>() != null)
                 {
-                    player.GetComponent<BasicBehaviour>().enabled = true;
+                    player.GetComponent<BehaviourController>().enabled = true;
                 }
 
                 GetComponent<TimeTrial>().enabled = true;

@@ -4,7 +4,7 @@ using UnityEngine;
 using FC;
 namespace FC
 {
-    public class BasicBehaviour : MonoBehaviour //0
+    public class BehaviourController : MonoBehaviour //0
     {
         private List<GenericBehaviour> behaviours; //2
         private List<GenericBehaviour> overridingBehaviours; //2
@@ -43,13 +43,13 @@ namespace FC
             behaviours = new List<GenericBehaviour>();
             overridingBehaviours = new List<GenericBehaviour>();
             myAnimator = GetComponent<Animator>();
-            hFloat = Animator.StringToHash("H");
-            vFloat = Animator.StringToHash("V");
+            hFloat = Animator.StringToHash(AnimatorKey.Horizontal);
+            vFloat = Animator.StringToHash(AnimatorKey.Vertical);
             camScript = playerCamera.GetComponent<ThirdPersonOrbitCam>();
             myRigidbody = GetComponent<Rigidbody>();
 
             // Grounded verification variables.
-            groundedBool = Animator.StringToHash("Grounded");
+            groundedBool = Animator.StringToHash(AnimatorKey.Grounded);
             colExtents = GetComponent<Collider>().bounds.extents;
         }
         // Check if the player is moving.
@@ -331,17 +331,17 @@ namespace FC
         }
     }
 
-    [RequireComponent(typeof(BasicBehaviour), typeof(Animator))]
+    [RequireComponent(typeof(BehaviourController), typeof(Animator))]
     public abstract class GenericBehaviour : MonoBehaviour //1
     {
         protected int speedFloat;
-        protected BasicBehaviour basicBehaviour;
+        protected BehaviourController BehaviourController;
         protected int behaviourCode;
         protected bool canSprint;
 
         private void Awake()
         {
-            basicBehaviour = GetComponent<BasicBehaviour>();
+            BehaviourController = GetComponent<BehaviourController>();
             speedFloat = Animator.StringToHash(AnimatorKey.Speed);
             canSprint = true;
 

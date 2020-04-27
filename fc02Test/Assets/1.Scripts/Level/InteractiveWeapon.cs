@@ -159,7 +159,7 @@ namespace FC
             if (toogle)
             {
                 pickupHUD.position = this.transform.position + Vector3.up * 0.5f;
-                Vector3 direction = player.GetComponent<BasicBehaviour>().playerCamera.forward;
+                Vector3 direction = player.GetComponent<BehaviourController>().playerCamera.forward;
                 direction.y = 0f;
                 pickupHUD.rotation = Quaternion.LookRotation(direction);
                 pickupHUD.Find("Label").GetComponent<Text>().text = "Pick " + this.gameObject.name;

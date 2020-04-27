@@ -8,9 +8,7 @@ namespace FC
     {
         public Transform player; // Player's reference.
         public Vector3 pivotOffset = new Vector3(0.0f, 1.0f, 0.0f); // Offset to repoint the camera.
-
-        public Vector3
-            camOffset = new Vector3(0.4f, 0.5f, -2.0f); // Offset to relocate the camera related to the player position.
+        public Vector3 camOffset = new Vector3(0.4f, 0.5f, -2.0f); // Offset to relocate the camera related to the player position.
 
         public float smooth = 10f; // Speed of camera responsiveness.
         public float horizontalAimingSpeed = 6f; // Horizontal turn speed.
@@ -32,14 +30,11 @@ namespace FC
         private float defaultFOV; // Default camera Field of View.
         private float targetFOV; // Target camera Field of View.
         private float targetMaxVerticalAngle; // Custom camera max vertical clamp angle.
-        private float deltaH = 0; // Delta to horizontaly rotate camera when locking its orientation.      
-        private Vector3 firstDirection; // The direction to lock camera for the first time.
-        private Vector3 directionToLock; // The current direction to lock the camera.
+        //private float deltaH = 0; // Delta to horizontaly rotate camera when locking its orientation.      
         private float recoilAngle = 0f; // The angle to vertically bounce the camera in a recoil movement.
         private Vector3 forwardHorizontalRef; // The forward reference on horizontal plane when clamping camera rotation.
 
-        private float
-            leftRelHorizontalAngle,
+        private float leftRelHorizontalAngle,
             rightRelHorizontalAngle; // The left and right angles to limit rotation relative to the forward reference.
 
         // Get the camera horizontal angle.
@@ -58,7 +53,7 @@ namespace FC
             cam.rotation = Quaternion.identity;
 
             // Get camera position relative to the player, used for collision test.
-            relCameraPos = transform.position - player.position;
+            relCameraPos = cam.position - player.position;
             relCameraPosMag = relCameraPos.magnitude - 0.5f;
 
             // Set up references and default values.
@@ -87,14 +82,6 @@ namespace FC
 
             // Set vertical camera bounce.
             angleV = Mathf.LerpAngle(angleV, angleV + recoilAngle, 10f * Time.deltaTime);
-
-            // Handle camera orientation lock.
-            if (firstDirection != Vector3.zero)
-            {
-                angleH -= deltaH;
-                UpdateLockAngle();
-                angleH += deltaH;
-            }
 
             // Handle camera horizontal rotation limits if set.
             if (forwardHorizontalRef != default(Vector3))
@@ -188,36 +175,6 @@ namespace FC
         public void BounceVertical(float degrees)
         {
             recoilAngle = degrees;
-        }
-
-        // Handle current camera facing when locking on a specific dynamic orientation.
-        private void UpdateLockAngle()
-        {
-            directionToLock.y = 0f;
-            float centerLockAngle = Vector3.Angle(firstDirection, directionToLock);
-            Vector3 cross = Vector3.Cross(firstDirection, directionToLock);
-            if (cross.y < 0) centerLockAngle = -centerLockAngle;
-            deltaH = centerLockAngle;
-        }
-
-        // Lock camera orientation to follow a specific direction. Usually used in short movements.
-        // Example uses: (player turning cover corner, skirting convex wall, vehicle turning)
-        public void LockOnDirection(Vector3 direction)
-        {
-            if (firstDirection == Vector3.zero)
-            {
-                firstDirection = direction;
-                firstDirection.y = 0f;
-            }
-
-            directionToLock = Vector3.Lerp(directionToLock, direction, 0.15f * smooth * Time.deltaTime);
-        }
-
-        // Unlock camera orientation to free mode.
-        public void UnlockOnDirection()
-        {
-            deltaH = 0;
-            firstDirection = directionToLock = Vector3.zero;
         }
 
         // Set camera offsets to custom values.

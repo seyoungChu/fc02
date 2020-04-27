@@ -29,23 +29,23 @@ namespace FC
             cornerBool = Animator.StringToHash(AnimatorKey.Corner);
 
             // Get initial bone rotation values.
-            Transform hips = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Hips);
+            Transform hips = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Hips);
             initialRootRotation = (hips.parent == transform) ? Vector3.zero : hips.parent.localEulerAngles;
             initialHipsRotation = hips.localEulerAngles;
-            initialSpineRotation = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Spine).localEulerAngles;
+            initialSpineRotation = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Spine).localEulerAngles;
         }
         
 
         // Rotate the player to match correct orientation, according to camera.
         void Rotating()
         {
-            Vector3 forward = basicBehaviour.playerCamera.TransformDirection(Vector3.forward);
+            Vector3 forward = BehaviourController.playerCamera.TransformDirection(Vector3.forward);
             // Player is moving on ground, Y component of camera facing is not relevant.
             forward.y = 0.0f;
             forward = forward.normalized;
 
             // Always rotates the player according to the camera horizontal rotation in aim mode.
-            Quaternion targetRotation = Quaternion.Euler(0, basicBehaviour.GetCamScript.GetH, 0);
+            Quaternion targetRotation = Quaternion.Euler(0, BehaviourController.GetCamScript.GetH, 0);
 
             float minSpeed = Quaternion.Angle(transform.rotation, targetRotation) * aimTurnSmoothing;
 
@@ -53,17 +53,17 @@ namespace FC
             if (peekCorner)
             {
                 // Rotate only player upper body when peeking a corner.
-                transform.rotation = Quaternion.LookRotation(-basicBehaviour.GetLastDirection());
+                transform.rotation = Quaternion.LookRotation(-BehaviourController.GetLastDirection());
                 targetRotation *= Quaternion.Euler(initialRootRotation);
                 targetRotation *= Quaternion.Euler(initialHipsRotation);
                 targetRotation *= Quaternion.Euler(initialSpineRotation);
-                Transform spine = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Spine);
+                Transform spine = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Spine);
                 spine.rotation = targetRotation;
             }
             else
             {
                 // Rotate entire player to face camera.
-                basicBehaviour.SetLastDirection(forward);
+                BehaviourController.SetLastDirection(forward);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, minSpeed * Time.deltaTime);
             }
         }
@@ -80,7 +80,7 @@ namespace FC
         {
             yield return new WaitForSeconds(0.05f);
             // Aiming is not possible.
-            if (basicBehaviour.GetTempLockStatus(this.behaviourCode) || basicBehaviour.IsOverriding(this))
+            if (BehaviourController.GetTempLockStatus(this.behaviourCode) || BehaviourController.IsOverriding(this))
             {
                 yield return false;
             }
@@ -90,15 +90,15 @@ namespace FC
                 int signal = 1;
                 if (peekCorner)
                 {
-                    signal = (int)Mathf.Sign(basicBehaviour.GetH);
+                    signal = (int)Mathf.Sign(BehaviourController.GetH);
                 }
 
                 aimCamOffset.x = Mathf.Abs(aimCamOffset.x) * signal;
                 aimPivotOffset.x = Mathf.Abs(aimPivotOffset.x) * signal;
                 yield return new WaitForSeconds(0.1f);
-                basicBehaviour.GetAnim.SetFloat(speedFloat, 0);
+                BehaviourController.GetAnim.SetFloat(speedFloat, 0);
                 // This state overrides the active one.
-                basicBehaviour.OverrideWithBehaviour(this);
+                BehaviourController.OverrideWithBehaviour(this);
             }
         }
 
@@ -107,10 +107,10 @@ namespace FC
         {
             aim = false;
             yield return new WaitForSeconds(0.3f);
-            basicBehaviour.GetCamScript.ResetTargetOffsets();
-            basicBehaviour.GetCamScript.ResetMaxVerticalAngle();
+            BehaviourController.GetCamScript.ResetTargetOffsets();
+            BehaviourController.GetCamScript.ResetMaxVerticalAngle();
             yield return new WaitForSeconds(0.05f);
-            basicBehaviour.RevokeOverridingBehaviour(this);
+            BehaviourController.RevokeOverridingBehaviour(this);
         }
 
         // LocalFixedUpdate overrides the virtual function of the base class.
@@ -119,7 +119,7 @@ namespace FC
             // Set camera position and orientation to the aim mode parameters.
             if (aim)
             {
-                basicBehaviour.GetCamScript.SetTargetOffsets(aimPivotOffset, aimCamOffset);
+                BehaviourController.GetCamScript.SetTargetOffsets(aimPivotOffset, aimCamOffset);
             }
 
         }
@@ -133,7 +133,7 @@ namespace FC
         // Update is used to set features regardless the active behaviour.
         void Update()
         {
-            peekCorner = basicBehaviour.GetAnim.GetBool(cornerBool);
+            peekCorner = BehaviourController.GetAnim.GetBool(cornerBool);
 
             // Activate/deactivate aim by input.
             if (Input.GetAxisRaw(ButtonName.Aim) != 0 && !aim)
@@ -156,7 +156,7 @@ namespace FC
             }
 
             // Set aim boolean on the Animator Controller.
-            basicBehaviour.GetAnim.SetBool(aimBool, aim);
+            BehaviourController.GetAnim.SetBool(aimBool, aim);
         }
 
         // Draw the crosshair when aiming.
@@ -164,7 +164,7 @@ namespace FC
         {
             if (crosshair)
             {
-                float mag = basicBehaviour.GetCamScript.GetCurrentPivotMagnitude(aimPivotOffset);
+                float mag = BehaviourController.GetCamScript.GetCurrentPivotMagnitude(aimPivotOffset);
                 if (mag < 0.05f)
                 {
                     GUI.DrawTexture(new Rect(Screen.width / 2 - (crosshair.width * 0.5f),

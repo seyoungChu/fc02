@@ -85,17 +85,17 @@ namespace FC
         };
 
             // Get player's avatar bone transforms for IK.
-            Transform neck = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Neck);
+            Transform neck = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Neck);
             if (!neck)
             {
-                neck = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Head).parent;
+                neck = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Head).parent;
             }
 
-            hips = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Hips);
-            spine = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Spine);
-            chest = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.Chest);
-            rightHand = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.RightHand);
-            leftArm = basicBehaviour.GetAnim.GetBoneTransform(HumanBodyBones.LeftUpperArm);
+            hips = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Hips);
+            spine = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Spine);
+            chest = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Chest);
+            rightHand = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.RightHand);
+            leftArm = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.LeftUpperArm);
 
             // Set default values.
             initialRootRotation = (hips.parent == transform) ? Vector3.zero : hips.parent.localEulerAngles;
@@ -128,7 +128,7 @@ namespace FC
                 {
                     //AudioSource.PlayClipAtPoint(weapons[activeWeapon].reloadSound, gunMuzzle.position, 0.5f);
                     SoundManager.Instance.PlayOneShotEffect((int)weapons[activeWeapon].reloadSound,gunMuzzle.position,0.5f);
-                    basicBehaviour.GetAnim.SetBool(reloadBool, true);
+                    BehaviourController.GetAnim.SetBool(reloadBool, true);
                 }
             }
             // Handle drop weapon action.
@@ -162,14 +162,14 @@ namespace FC
                 ShotDecay();
             }                
 
-            isAiming = basicBehaviour.GetAnim.GetBool(aimBool);
+            isAiming = BehaviourController.GetAnim.GetBool(aimBool);
         }
 
         // Shoot the weapon.
         private void ShootWeapon(int weapon, bool firstShot = true)
         {
             // Check conditions to shoot.
-            if (!isAiming || isAimBlocked || basicBehaviour.GetAnim.GetBool(reloadBool) ||
+            if (!isAiming || isAimBlocked || BehaviourController.GetAnim.GetBool(reloadBool) ||
                 !weapons[weapon].Shoot(firstShot))
             {
                 return;
@@ -178,14 +178,14 @@ namespace FC
             {
                 // Update parameters: burst count, trigger for animation, crosshair change and recoil camera bounce.
                 burstShotCount++;
-                basicBehaviour.GetAnim.SetTrigger(shootingTrigger);
+                BehaviourController.GetAnim.SetTrigger(shootingTrigger);
                 aimBehaviour.crosshair = shootCrosshair;
-                basicBehaviour.GetCamScript.BounceVertical(weapons[weapon].recoilAngle);
+                BehaviourController.GetCamScript.BounceVertical(weapons[weapon].recoilAngle);
 
                 // Cast the shot to find a target.
-                Vector3 imprecision = Random.Range(-shotErrorRate, shotErrorRate) * basicBehaviour.playerCamera.right;
-                Ray ray = new Ray(basicBehaviour.playerCamera.position,
-                    basicBehaviour.playerCamera.forward + imprecision);
+                Vector3 imprecision = Random.Range(-shotErrorRate, shotErrorRate) * BehaviourController.playerCamera.right;
+                Ray ray = new Ray(BehaviourController.playerCamera.position,
+                    BehaviourController.playerCamera.forward + imprecision);
                 RaycastHit hit = default(RaycastHit);
                 // Target was hit.
                 if (Physics.Raycast(ray, out hit, 500f, shotMask))
@@ -315,8 +315,8 @@ namespace FC
             // Call change weapon animation if new weapon type is different.
             if (oldWeapon != newWeapon)
             {
-                basicBehaviour.GetAnim.SetTrigger(changeWeaponTrigger);
-                basicBehaviour.GetAnim.SetInteger(weaponTypeInt, weapons[newWeapon] ? (int)weapons[newWeapon].type : 0);
+                BehaviourController.GetAnim.SetTrigger(changeWeaponTrigger);
+                BehaviourController.GetAnim.SetInteger(weaponTypeInt, weapons[newWeapon] ? (int)weapons[newWeapon].type : 0);
             }
 
             // Set crosshair if armed.
@@ -339,7 +339,7 @@ namespace FC
                     if (activeWeapon > 0)
                     {
                         // Set camera bounce return on recoil end.
-                        basicBehaviour.GetCamScript.BounceVertical(-weapons[activeWeapon].recoilAngle * 0.1f);
+                        BehaviourController.GetCamScript.BounceVertical(-weapons[activeWeapon].recoilAngle * 0.1f);
 
                         // Handle next shot for burst or auto mode.
                         if (shotDecay <= (0.4f - 2 * Time.deltaTime))
@@ -369,7 +369,7 @@ namespace FC
             else
             {
                 isShotAlive = false;
-                basicBehaviour.GetCamScript.BounceVertical(0);
+                BehaviourController.GetCamScript.BounceVertical(0);
                 burstShotCount = 0;
             }
         }
@@ -408,7 +408,7 @@ namespace FC
         // Handle reload weapon end (called by animation).
         public void EndReloadWeapon()
         {
-            basicBehaviour.GetAnim.SetBool(reloadBool, false);
+            BehaviourController.GetAnim.SetBool(reloadBool, false);
             weapons[activeWeapon].EndReload();
         }
 
@@ -430,11 +430,11 @@ namespace FC
         private bool CheckforBlockedAim()
         {
             isAimBlocked = Physics.SphereCast(this.transform.position + castRelativeOrigin, 0.1f,
-                basicBehaviour.GetCamScript.transform.forward, out RaycastHit hit, distToHand - 0.1f);
+                BehaviourController.GetCamScript.transform.forward, out RaycastHit hit, distToHand - 0.1f);
             isAimBlocked = isAimBlocked && hit.collider.transform != this.transform;
-            basicBehaviour.GetAnim.SetBool(blockedAimBool, isAimBlocked);
+            BehaviourController.GetAnim.SetBool(blockedAimBool, isAimBlocked);
             Debug.DrawRay(this.transform.position + castRelativeOrigin,
-                basicBehaviour.GetCamScript.transform.forward * distToHand, isAimBlocked ? Color.red : Color.cyan);
+                BehaviourController.GetCamScript.transform.forward * distToHand, isAimBlocked ? Color.red : Color.cyan);
 
             return isAimBlocked;
         }
@@ -456,11 +456,11 @@ namespace FC
                 targetRot *= Quaternion.Euler(initialHipsRotation);
                 targetRot *= Quaternion.Euler(initialSpineRotation);
                 // Set upper body horizontal orientation.
-                basicBehaviour.GetAnim.SetBoneLocalRotation(HumanBodyBones.Spine,
+                BehaviourController.GetAnim.SetBoneLocalRotation(HumanBodyBones.Spine,
                     Quaternion.Inverse(hips.rotation) * targetRot);
 
                 // Keep upper body orientation regardless strafe direction.
-                float xCamRot = Quaternion.LookRotation(basicBehaviour.playerCamera.forward).eulerAngles.x;
+                float xCamRot = Quaternion.LookRotation(BehaviourController.playerCamera.forward).eulerAngles.x;
                 targetRot = Quaternion.AngleAxis(xCamRot + armsRotation, this.transform.right);
                 if (weapons[activeWeapon] && weapons[activeWeapon].type == InteractiveWeapon.WeaponType.LONG)
                 {
@@ -472,7 +472,7 @@ namespace FC
                 targetRot *= spine.rotation;
                 targetRot *= Quaternion.Euler(initialChestRotation);
                 // Set upper body vertical orientation.
-                basicBehaviour.GetAnim.SetBoneLocalRotation(HumanBodyBones.Chest,
+                BehaviourController.GetAnim.SetBoneLocalRotation(HumanBodyBones.Chest,
                     Quaternion.Inverse(spine.rotation) * targetRot);
             }
         }
@@ -482,8 +482,8 @@ namespace FC
         {
             // Correct right hand position when covering.
             if ((!isAiming || isAimBlocked)
-                && basicBehaviour.GetAnim.GetBool(coveringBool)
-                && basicBehaviour.GetAnim.GetFloat(Animator.StringToHash(AnimatorKey.Crouch)) > 0.5f)
+                && BehaviourController.GetAnim.GetBool(coveringBool)
+                && BehaviourController.GetAnim.GetFloat(Animator.StringToHash(AnimatorKey.Crouch)) > 0.5f)
             {
                 rightHand.Rotate(RightHandCover);
             }

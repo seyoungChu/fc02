@@ -27,18 +27,18 @@ namespace FC
             // Set up the references.
             jumpBool = Animator.StringToHash(AnimatorKey.Jump);
             groundedBool = Animator.StringToHash(AnimatorKey.Grounded);
-            basicBehaviour.GetAnim.SetBool(groundedBool, true);
+            BehaviourController.GetAnim.SetBool(groundedBool, true);
 
             // Subscribe and register this behaviour as the default behaviour.
-            basicBehaviour.SubscribeBehaviour(this);
-            basicBehaviour.RegisterDefaultBehaviour(this.behaviourCode);
+            BehaviourController.SubscribeBehaviour(this);
+            BehaviourController.RegisterDefaultBehaviour(this.behaviourCode);
             speedSeeker = runSpeed;
         }
         // Rotate the player to match correct orientation, according to camera and key pressed.
         Vector3 Rotating(float horizontal, float vertical)
         {
             // Get camera forward direction, without vertical component.
-            Vector3 forward = basicBehaviour.playerCamera.TransformDirection(Vector3.forward);
+            Vector3 forward = BehaviourController.playerCamera.TransformDirection(Vector3.forward);
 
             // Player is moving on ground, Y component of camera facing is not relevant.
             forward.y = 0.0f;
@@ -50,20 +50,20 @@ namespace FC
             targetDirection = forward * vertical + right * horizontal;
 
             // Lerp current direction to calculated target direction.
-            if ((basicBehaviour.IsMoving() && targetDirection != Vector3.zero))
+            if ((BehaviourController.IsMoving() && targetDirection != Vector3.zero))
             {
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
 
-                Quaternion newRotation = Quaternion.Slerp(basicBehaviour.GetRigidBody.rotation, targetRotation,
-                    basicBehaviour.turnSmoothing);
-                basicBehaviour.GetRigidBody.MoveRotation(newRotation);
-                basicBehaviour.SetLastDirection(targetDirection);
+                Quaternion newRotation = Quaternion.Slerp(BehaviourController.GetRigidBody.rotation, targetRotation,
+                    BehaviourController.turnSmoothing);
+                BehaviourController.GetRigidBody.MoveRotation(newRotation);
+                BehaviourController.SetLastDirection(targetDirection);
             }
 
             // If idle, Ignore current camera facing and consider last moving direction.
             if (!(Mathf.Abs(horizontal) > 0.9f || Mathf.Abs(vertical) > 0.9f))
             {
-                basicBehaviour.Repositioning();
+                BehaviourController.Repositioning();
             }
 
             return targetDirection;
@@ -74,12 +74,12 @@ namespace FC
         {
             isColliding = true;
             // Slide on vertical obstacles
-            if (basicBehaviour.IsCurrentBehaviour(this.GetBehaviourCode) && collision.GetContact(0).normal.y <= 0.1f)
+            if (BehaviourController.IsCurrentBehaviour(this.GetBehaviourCode) && collision.GetContact(0).normal.y <= 0.1f)
             {
-                float vel = basicBehaviour.GetAnim.velocity.magnitude;
+                float vel = BehaviourController.GetAnim.velocity.magnitude;
                 Vector3 tangentMove = Vector3.ProjectOnPlane(transform.forward, collision.GetContact(0).normal).normalized *
                                       vel;
-                basicBehaviour.GetRigidBody.AddForce(tangentMove, ForceMode.VelocityChange);
+                BehaviourController.GetRigidBody.AddForce(tangentMove, ForceMode.VelocityChange);
             }
         }
 
@@ -92,13 +92,13 @@ namespace FC
         void JumpManagement()
         {
             // Start a new jump.
-            if (jump && !basicBehaviour.GetAnim.GetBool(jumpBool) && basicBehaviour.IsGrounded())
+            if (jump && !BehaviourController.GetAnim.GetBool(jumpBool) && BehaviourController.IsGrounded())
             {
                 // Set jump related parameters.
-                basicBehaviour.LockTempBehaviour(this.behaviourCode);
-                basicBehaviour.GetAnim.SetBool(jumpBool, true);
+                BehaviourController.LockTempBehaviour(this.behaviourCode);
+                BehaviourController.GetAnim.SetBool(jumpBool, true);
                 // Is a locomotion jump?
-                if (basicBehaviour.GetAnim.GetFloat(speedFloat) > 0.1f)
+                if (BehaviourController.GetAnim.GetFloat(speedFloat) > 0.1f)
                 {
                     // Temporarily change player friction to pass through obstacles.
                     capsuleCollider.material.dynamicFriction = 0f;
@@ -108,31 +108,31 @@ namespace FC
                     // Set jump vertical impulse velocity.
                     float velocity = 2f * Mathf.Abs(Physics.gravity.y) * jumpHeight;
                     velocity = Mathf.Sqrt(velocity);
-                    basicBehaviour.GetRigidBody.AddForce(Vector3.up * velocity, ForceMode.VelocityChange);
+                    BehaviourController.GetRigidBody.AddForce(Vector3.up * velocity, ForceMode.VelocityChange);
                 }
             }
             // Is already jumping?
-            else if (basicBehaviour.GetAnim.GetBool(jumpBool))
+            else if (BehaviourController.GetAnim.GetBool(jumpBool))
             {
                 // Keep forward movement while in the air.
-                if (!basicBehaviour.IsGrounded() && !isColliding && basicBehaviour.GetTempLockStatus())
+                if (!BehaviourController.IsGrounded() && !isColliding && BehaviourController.GetTempLockStatus())
                 {
-                    basicBehaviour.GetRigidBody.AddForce(
+                    BehaviourController.GetRigidBody.AddForce(
                         transform.forward * jumpIntertialForce * Physics.gravity.magnitude * sprintSpeed,
                         ForceMode.Acceleration);
                 }
 
                 // Has landed?
-                if ((basicBehaviour.GetRigidBody.velocity.y < 0) && basicBehaviour.IsGrounded())
+                if ((BehaviourController.GetRigidBody.velocity.y < 0) && BehaviourController.IsGrounded())
                 {
-                    basicBehaviour.GetAnim.SetBool(groundedBool, true);
+                    BehaviourController.GetAnim.SetBool(groundedBool, true);
                     // Change back player friction to default.
                     capsuleCollider.material.dynamicFriction = 0.6f;
                     capsuleCollider.material.staticFriction = 0.6f;
                     // Set jump related parameters.
                     jump = false;
-                    basicBehaviour.GetAnim.SetBool(jumpBool, false);
-                    basicBehaviour.UnlockTempBehaviour(this.behaviourCode);
+                    BehaviourController.GetAnim.SetBool(jumpBool, false);
+                    BehaviourController.UnlockTempBehaviour(this.behaviourCode);
                 }
             }
         }
@@ -141,11 +141,12 @@ namespace FC
         void MovementManagement(float horizontal, float vertical)
         {
             // On ground, obey gravity.
-            if (basicBehaviour.IsGrounded())
-                basicBehaviour.GetRigidBody.useGravity = true;
-
+            if (BehaviourController.IsGrounded())
+            {
+                BehaviourController.GetRigidBody.useGravity = true;
+            }
             // Avoid takeoff when reached a slope end.
-            else if (!basicBehaviour.GetAnim.GetBool(jumpBool) && basicBehaviour.GetRigidBody.velocity.y > 0)
+            else if (!BehaviourController.GetAnim.GetBool(jumpBool) && BehaviourController.GetRigidBody.velocity.y > 0)
             {
                 RemoveVerticalVelocity();
             }
@@ -160,28 +161,28 @@ namespace FC
             speedSeeker += Input.GetAxis("Mouse ScrollWheel");
             speedSeeker = Mathf.Clamp(speedSeeker, walkSpeed, runSpeed);
             speed *= speedSeeker;
-            if (basicBehaviour.IsSprinting())
+            if (BehaviourController.IsSprinting())
             {
                 speed = sprintSpeed;
             }
 
-            basicBehaviour.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
+            BehaviourController.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
         }
 
         // Remove vertical rigidbody velocity.
         private void RemoveVerticalVelocity()
         {
-            Vector3 horizontalVelocity = basicBehaviour.GetRigidBody.velocity;
+            Vector3 horizontalVelocity = BehaviourController.GetRigidBody.velocity;
             horizontalVelocity.y = 0;
-            basicBehaviour.GetRigidBody.velocity = horizontalVelocity;
+            BehaviourController.GetRigidBody.velocity = horizontalVelocity;
         }
 
         // Update is used to set features regardless the active behaviour.
         void Update()
         {
             // Get jump input.
-            if (!jump && Input.GetButtonDown(ButtonName.Jump) && basicBehaviour.IsCurrentBehaviour(this.behaviourCode) &&
-                !basicBehaviour.IsOverriding())
+            if (!jump && Input.GetButtonDown(ButtonName.Jump) && BehaviourController.IsCurrentBehaviour(this.behaviourCode) &&
+                !BehaviourController.IsOverriding())
             {
                 jump = true;
             }
@@ -190,7 +191,7 @@ namespace FC
         public override void LocalFixedUpdate()
         {
             // Call the basic movement manager.
-            MovementManagement(basicBehaviour.GetH, basicBehaviour.GetV);
+            MovementManagement(BehaviourController.GetH, BehaviourController.GetV);
 
             // Call the jump manager.
             JumpManagement();
