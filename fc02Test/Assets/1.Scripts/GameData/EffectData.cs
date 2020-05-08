@@ -128,11 +128,25 @@ public class EffectData : BaseData
 			return null;
 		}
 
-		//EffectClip clip = new EffectClip();
-		//clip.realID = index;
+		EffectClip clip = new EffectClip();
+		clip.effect_fullPath = effectClips[index].effect_fullPath;
+		clip.effectName = effectClips[index].effectName;
+		clip.effectPath = effectClips[index].effectPath;
+		clip.effectType = effectClips[index].effectType;
+		clip.effectPrefab = effectClips[index].effectPrefab;
+		clip.realID = this.effectClips.Length;
+
+		return clip;
+	}
+
+	public EffectClip GetClip(int index)
+	{
+		if (index < 0 || index >= this.effectClips.Length)
+		{
+			return null;
+		}
 		effectClips[index].PreLoad();
 
-		//clip.PreLoad();
 		return effectClips[index];
 	}
 

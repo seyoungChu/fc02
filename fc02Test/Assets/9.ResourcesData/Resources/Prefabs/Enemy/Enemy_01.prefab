@@ -1606,6 +1606,9 @@ GameObject:
   - component: {fileID: 2020753271136288744}
   - component: {fileID: 1938836698292321}
   - component: {fileID: 1938836698292322}
+  - component: {fileID: 37478136}
+  - component: {fileID: 1795559493}
+  - component: {fileID: 632921321761582086}
   m_Layer: 12
   m_Name: Enemy_01
   m_TagString: Enemy
@@ -1777,6 +1780,50 @@ MonoBehaviour:
   bloodSample: {fileID: 2997732814145165452, guid: 4107801ac0a244a898c8e7f7feed493d,
     type: 3}
   headshot: 1
+--- !u!136 &37478136
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021495249494609561}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.78
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.84, z: 0}
+--- !u!136 &1795559493
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021495249494609561}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.78
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.84, z: 0}
+--- !u!54 &632921321761582086
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021495249494609561}
+  serializedVersion: 2
+  m_Mass: 80
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 3
 --- !u!1 &2021498381684235811
 GameObject:
   m_ObjectHideFlags: 0
@@ -4277,9 +4324,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2025017642034718713}
     m_Modifications:
+    - target: {fileID: 1071591853618604, guid: 6993fd0e7237f024e80f00288eb435cd, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1215176133026714, guid: 6993fd0e7237f024e80f00288eb435cd, type: 3}
       propertyPath: m_Name
       value: SM_Wep_Pistol_Revolver_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215176133026714, guid: 6993fd0e7237f024e80f00288eb435cd, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1300283488227454, guid: 6993fd0e7237f024e80f00288eb435cd, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1445563466327256, guid: 6993fd0e7237f024e80f00288eb435cd, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4765272294121392, guid: 6993fd0e7237f024e80f00288eb435cd, type: 3}
       propertyPath: m_LocalPosition.x

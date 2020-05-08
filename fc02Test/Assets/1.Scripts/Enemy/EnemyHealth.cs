@@ -22,7 +22,7 @@ namespace FC
 		private Transform hud;                                      // The current NPC health HUD on scene.
 		private RectTransform healthBar;                            // The NPC health bar on HUD.
 		private float originalBarScale;                             // The initial NPC health bar size.
-		private HealthBillboard healthUI;                    // The NPC health HUD.
+		private HealthHUD healthUI;                    // The NPC health HUD.
 		private Animator anim;                                      // The NPC animator controller.
 		private StateController controller;                         // The NPC AI FSM controller.
 
@@ -30,11 +30,14 @@ namespace FC
 		{
 			// Create the health HUD.
 			hud = GameObject.Instantiate(healthHUD, transform).transform;
-
+			if (!hud.gameObject.activeSelf)
+			{
+				hud.gameObject.SetActive(true);
+			}
 			// Set up the references.
 			totalHealth = health;
 			healthBar = hud.transform.Find("Bar").GetComponent<RectTransform>();
-			healthUI = hud.GetComponent<HealthBillboard>();
+			healthUI = hud.GetComponent<HealthHUD>();
 			originalBarScale = healthBar.sizeDelta.x;
 			anim = GetComponent<Animator>();
 			controller = GetComponent<StateController>();

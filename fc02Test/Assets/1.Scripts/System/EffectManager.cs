@@ -19,7 +19,7 @@ public class EffectManager : SingletonMonobehaviour<EffectManager>
 
     public GameObject EffectOneShot(int index, Vector3 position)
     {
-        EffectClip clip = DataManager.EffectData().GetCopy(index);
+        EffectClip clip = DataManager.EffectData().GetClip(index);
         GameObject effectInstance = clip.Instantiate(position);
         effectInstance.SetActive(true);
         return effectInstance;
