@@ -29,18 +29,18 @@ public class EffectTool : EditorWindow
         effectData = ScriptableObject.CreateInstance<EffectData>();
         effectData.LoadData();
 
-        EffectTool window = (EffectTool) EditorWindow.GetWindow<EffectTool>(false, "Effect Tool");
+        EffectTool window = GetWindow<EffectTool>(false, "Effect Tool");
         window.Show();
     }
 
     private void OnGUI()
     {
-        if (EffectTool.effectData == null)
+        if (effectData == null)
         {
             return;
         }
 
-        this.EffectClip_ShowTab();
+        EffectClip_ShowTab();
     }
 
     public void EffectClip_ShowTab()
@@ -52,9 +52,9 @@ public class EffectTool : EditorWindow
             {
                 if (GUILayout.Button("Add", GUILayout.Width(this.uiWidth200)))
                 {
-                    EffectTool.effectData.AddEffect("NewEffect");
-                    this.selection = EffectTool.effectData.GetDataCount() - 1;
-                    this.effectSource = null;
+                    effectData.AddEffect("NewEffect");
+                    selection = effectData.GetDataCount() - 1;
+                    effectSource = null;
                     GUI.FocusControl("ID");
                 }
 
@@ -62,25 +62,25 @@ public class EffectTool : EditorWindow
                 if (GUILayout.Button("Copy", GUILayout.Width(this.uiWidth200)))
                 {
                     GUI.FocusControl("Copy");
-                    EffectTool.effectData.Copy(this.selection);
-                    this.effectSource = null;
-                    this.selection = EffectTool.effectData.GetDataCount() - 1;
+                    effectData.Copy(this.selection);
+                    effectSource = null;
+                    selection = effectData.GetDataCount() - 1;
                 }
 
-                if (EffectTool.effectData.GetDataCount() > 1)
+                if (effectData.GetDataCount() > 1)
                 {
                     GUI.SetNextControlName("Remove");
-                    if (GUILayout.Button("Remove", GUILayout.Width(this.uiWidth200)))
+                    if (GUILayout.Button("Remove", GUILayout.Width(uiWidth200)))
                     {
                         GUI.FocusControl("Remove");
-                        this.effectSource = null;
-                        EffectTool.effectData.RemoveData(this.selection);
+                        effectSource = null;
+                        effectData.RemoveData(this.selection);
                     }
                 }
 
-                if (this.selection > EffectTool.effectData.GetDataCount() - 1)
+                if (selection > effectData.GetDataCount() - 1)
                 {
-                    this.selection = EffectTool.effectData.GetDataCount() - 1;
+                    selection = effectData.GetDataCount() - 1;
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -88,22 +88,21 @@ public class EffectTool : EditorWindow
             EditorGUILayout.BeginHorizontal();
             {
                 //+ 목록 리스트를 보여준다.
-                EditorGUILayout.BeginVertical(GUILayout.Width(this.uiWidth300));
+                EditorGUILayout.BeginVertical(GUILayout.Width(uiWidth300));
                 {
                     EditorGUILayout.Separator();
                     EditorGUILayout.BeginVertical("box");
                     {
-                        this.SP1 = EditorGUILayout.BeginScrollView(this.SP1);
+                        SP1 = EditorGUILayout.BeginScrollView(this.SP1);
                         {
-                            if (EffectTool.effectData.GetDataCount() > 0)
+                            if (effectData.GetDataCount() > 0)
                             {
-                                var __prev = this.selection;
-                                this.selection = GUILayout.SelectionGrid(this.selection,
-                                    EffectTool.effectData.GetNameList(true), 1);
-                                if (__prev != this.selection)
+                                int __prev = selection;
+                                selection = GUILayout.SelectionGrid(this.selection,
+                                    effectData.GetNameList(true), 1);
+                                if (__prev != selection)
                                 {
-                                    this.effectSource = null;
-                                    //this.beShotSource = null;
+                                    effectSource = null;
                                 }
                             }
                         }
@@ -116,49 +115,49 @@ public class EffectTool : EditorWindow
                 //+ 설정 부분.
                 EditorGUILayout.BeginVertical();
                 {
-                    this.SP2 = EditorGUILayout.BeginScrollView(this.SP2);
+                    SP2 = EditorGUILayout.BeginScrollView(this.SP2);
                     {
-                        if (EffectTool.effectData.GetDataCount() > 0)
+                        if (effectData.GetDataCount() > 0)
                         {
                             EditorGUILayout.BeginVertical();
                             {
                                 EditorGUILayout.Separator();
                                 GUI.SetNextControlName("ID");
-                                EditorGUILayout.LabelField("Position ID", this.selection.ToString(),
-                                    GUILayout.Width(this.uiWidth300));
-                                EffectTool.effectData.names[this.selection] = EditorGUILayout.TextField("이름.",
-                                    EffectTool.effectData.names[this.selection],
+                                EditorGUILayout.LabelField("Position ID", selection.ToString(),
+                                    GUILayout.Width(uiWidth300));
+                                effectData.names[selection] = EditorGUILayout.TextField("이름.",
+                                    effectData.names[this.selection],
                                     GUILayout.Width(this.uiWidth300 * 1.5f));
-                                EffectTool.effectData.effectClips[this.selection].effectType =
+                                effectData.effectClips[selection].effectType =
                                     (EffectType) EditorGUILayout.EnumPopup("이펙트타입.",
-                                        EffectTool.effectData.effectClips[this.selection].effectType,
-                                        GUILayout.Width(this.uiWidth300));
+                                        effectData.effectClips[selection].effectType,
+                                        GUILayout.Width(uiWidth300));
                                 //special property
-                                EffectType eType = EffectTool.effectData.effectClips[this.selection].effectType;
+                                EffectType eType = effectData.effectClips[selection].effectType;
                                 EditorGUILayout.Separator();
-                                if (this.effectSource == null &&
-                                    EffectTool.effectData.effectClips[selection].effectName != string.Empty)
+                                if (effectSource == null &&
+                                    effectData.effectClips[selection].effectName != string.Empty)
                                 {
-                                    EffectTool.effectData.effectClips[selection].PreLoad();
-                                    this.effectSource =
-                                        Resources.Load(EffectTool.effectData.effectClips[selection].effectPath +
-                                                       EffectTool.effectData.effectClips[selection]
+                                    effectData.effectClips[selection].PreLoad();
+                                    effectSource =
+                                        Resources.Load(effectData.effectClips[selection].effectPath +
+                                                       effectData.effectClips[selection]
                                                            .effectName) as GameObject;
                                 }
 
-                                this.effectSource = (GameObject) EditorGUILayout.ObjectField("이펙트", this.effectSource,
+                                effectSource = (GameObject) EditorGUILayout.ObjectField("이펙트", this.effectSource,
                                     typeof(GameObject), false, GUILayout.Width(this.uiWidth300 * 1.5f));
-                                if (this.effectSource != null)
+                                if (effectSource != null)
                                 {
-                                    EffectTool.effectData.effectClips[selection].effectPath =
+                                    effectData.effectClips[selection].effectPath =
                                         EditorHelper.GetPath(this.effectSource);
-                                    EffectTool.effectData.effectClips[selection].effectName = this.effectSource.name;
+                                    effectData.effectClips[selection].effectName = effectSource.name;
                                 }
                                 else
                                 {
-                                    EffectTool.effectData.effectClips[selection].effectName = string.Empty;
-                                    EffectTool.effectData.effectClips[selection].effectPath = string.Empty;
-                                    this.effectSource = null;
+                                    effectData.effectClips[selection].effectName = string.Empty;
+                                    effectData.effectClips[selection].effectPath = string.Empty;
+                                    effectSource = null;
                                 }
 
                                 EditorGUILayout.Separator();
@@ -211,11 +210,11 @@ public class EffectTool : EditorWindow
 
         StringBuilder builder = new StringBuilder();
         builder.AppendLine();
-        for (int i = 0; i < EffectTool.effectData.names.Length; i++)
+        for (int i = 0; i < effectData.names.Length; i++)
         {
-            if (!EffectTool.effectData.names[i].ToLower().Contains("none"))
+            if (effectData.names[i] != string.Empty)
             {
-                builder.AppendLine("    " + EffectTool.effectData.names[i] + " = " + i.ToString() + ",");
+                builder.AppendLine("    " + effectData.names[i] + " = " + i + ",");
             }
         }
 

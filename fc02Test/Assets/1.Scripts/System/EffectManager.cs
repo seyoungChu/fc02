@@ -14,7 +14,6 @@ public class EffectManager : SingletonMonobehaviour<EffectManager>
             effctPoolRoot = new GameObject("EffectRoot").transform;
             effctPoolRoot.SetParent(transform);
         }
-        
     }
 
     public GameObject EffectOneShot(int index, Vector3 position)

@@ -22,16 +22,16 @@ public class SoundTool : EditorWindow
 	[MenuItem("Tools/Sound Tool")]
 	static void Init()
 	{
-		soundData = ScriptableObject.CreateInstance<SoundData>();
+		soundData = CreateInstance<SoundData>();
 		soundData.LoadData();
 
-		SoundTool window = (SoundTool)EditorWindow.GetWindow<SoundTool>(false, "Sound Tool");
+		SoundTool window = GetWindow<SoundTool>(false, "Sound Tool");
 		window.Show();
 	}
 
 	void OnGUI()
 	{
-		if (SoundTool.soundData == null)
+		if (soundData == null)
 		{
 			return;
 		}
@@ -42,8 +42,8 @@ public class SoundTool : EditorWindow
 			{
 				if (GUILayout.Button("Add", GUILayout.Width(this.uiWidth2)))
 				{
-					SoundTool.soundData.AddSound("NewSound");
-					this.selection = SoundTool.soundData.GetDataCount() - 1;
+					soundData.AddSound("NewSound");
+					this.selection = soundData.GetDataCount() - 1;
 					this.soundSource = null;
 					GUI.FocusControl("ID");
 				}
@@ -51,26 +51,26 @@ public class SoundTool : EditorWindow
 				if (GUILayout.Button("Copy", GUILayout.Width(this.uiWidth2)))
 				{
 					GUI.FocusControl("Copy");
-					SoundTool.soundData.Copy(this.selection);
+					soundData.Copy(this.selection);
 					this.soundSource = null;
-					this.selection = SoundTool.soundData.GetDataCount() - 1;
+					this.selection = soundData.GetDataCount() - 1;
 				}
-				if (SoundTool.soundData.GetDataCount() > 1)
+				if (soundData.GetDataCount() > 1)
 				{
 					GUI.SetNextControlName("Remove");
 					if (GUILayout.Button("Remove", GUILayout.Width(this.uiWidth2)))
 					{
 						GUI.FocusControl("Remove");
 						this.soundSource = null;
-						SoundTool.soundData.RemoveData(this.selection);
+						soundData.RemoveData(this.selection);
 					}
 
 				}
 
 
-				if (this.selection > SoundTool.soundData.GetDataCount() - 1)
+				if (this.selection > soundData.GetDataCount() - 1)
 				{
-					this.selection = SoundTool.soundData.GetDataCount() - 1;
+					this.selection = soundData.GetDataCount() - 1;
 				}
 
 			}
@@ -85,10 +85,10 @@ public class SoundTool : EditorWindow
 					{
 						this.SP1 = EditorGUILayout.BeginScrollView(this.SP1);
 						{
-							if (SoundTool.soundData.GetDataCount() > 0)
+							if (soundData.GetDataCount() > 0)
 							{
 								var __prev = this.selection;
-								this.selection = GUILayout.SelectionGrid(this.selection, SoundTool.soundData.GetNameList(true), 1);
+								this.selection = GUILayout.SelectionGrid(this.selection, soundData.GetNameList(true), 1);
 								if (__prev != this.selection)
 								{
 									this.soundSource = null;
@@ -106,58 +106,58 @@ public class SoundTool : EditorWindow
 				{
 					this.SP2 = EditorGUILayout.BeginScrollView(this.SP2);
 					{
-						if (SoundTool.soundData.GetDataCount() > 0)
+						if (soundData.GetDataCount() > 0)
 						{
 							EditorGUILayout.BeginVertical();
 							{
 								EditorGUILayout.Separator();
 								GUI.SetNextControlName("ID");
 								EditorGUILayout.LabelField("Position ID", this.selection.ToString(), GUILayout.Width(this.uiWidth1));
-								SoundTool.soundData.names[this.selection] = EditorGUILayout.TextField("Name", SoundTool.soundData.names[this.selection], GUILayout.Width(this.uiWidth1 + 1.5f));
-								SoundTool.soundData.soundClips[this.selection].playType = (SoundPlayType)EditorGUILayout.EnumPopup("PlayType", SoundTool.soundData.soundClips[this.selection].playType, GUILayout.Width(this.uiWidth1));
-								SoundTool.soundData.soundClips[this.selection].maxVolume = EditorGUILayout.FloatField("Max Volume", SoundTool.soundData.soundClips[selection].maxVolume, GUILayout.Width(this.uiWidth1));
-								SoundTool.soundData.soundClips[this.selection].isLoop = EditorGUILayout.Toggle("Loop Clip", SoundTool.soundData.soundClips[selection].isLoop, GUILayout.Width(this.uiWidth1));
+								soundData.names[this.selection] = EditorGUILayout.TextField("Name", soundData.names[this.selection], GUILayout.Width(this.uiWidth1 + 1.5f));
+								soundData.soundClips[this.selection].playType = (SoundPlayType)EditorGUILayout.EnumPopup("PlayType", soundData.soundClips[this.selection].playType, GUILayout.Width(this.uiWidth1));
+								soundData.soundClips[this.selection].maxVolume = EditorGUILayout.FloatField("Max Volume", soundData.soundClips[selection].maxVolume, GUILayout.Width(this.uiWidth1));
+								soundData.soundClips[this.selection].isLoop = EditorGUILayout.Toggle("Loop Clip", soundData.soundClips[selection].isLoop, GUILayout.Width(this.uiWidth1));
 								EditorGUILayout.Separator();
-								if (this.soundSource == null && SoundTool.soundData.soundClips[selection].clipName != string.Empty)
+								if (this.soundSource == null && soundData.soundClips[selection].clipName != string.Empty)
 								{
-									this.soundSource = Resources.Load(SoundTool.soundData.soundClips[selection].clipPath + SoundTool.soundData.soundClips[selection].clipName) as AudioClip;
+									this.soundSource = Resources.Load(soundData.soundClips[selection].clipPath + soundData.soundClips[selection].clipName) as AudioClip;
 								}
 								this.soundSource = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", this.soundSource, typeof(AudioClip), false, GUILayout.Width(this.uiWidth1 * 1.5f));
 								if (this.soundSource != null)
 								{
-									SoundTool.soundData.soundClips[selection].clipPath = EditorHelper.GetPath(this.soundSource);
-									SoundTool.soundData.soundClips[selection].clipName = this.soundSource.name;
-									SoundTool.soundData.soundClips[selection].pitch = EditorGUILayout.Slider("Pitch", SoundTool.soundData.soundClips[selection].pitch, -3.0f, 3.0f, GUILayout.Width(this.uiWidth1 * 1.5f));
-									SoundTool.soundData.soundClips[selection].dopplerLevel = EditorGUILayout.Slider("Doppler Level", SoundTool.soundData.soundClips[selection].dopplerLevel, 0.0f, 5.0f, GUILayout.Width(this.uiWidth1 * 1.5f));
-									SoundTool.soundData.soundClips[selection].rollOffMode = (AudioRolloffMode)EditorGUILayout.EnumPopup("Volume RollOff", SoundTool.soundData.soundClips[selection].rollOffMode, GUILayout.Width(this.uiWidth1 * 1.5f));
-									SoundTool.soundData.soundClips[selection].minDistance = float.Parse(EditorGUILayout.TextField("MinDistance", SoundTool.soundData.soundClips[selection].minDistance.ToString(), GUILayout.Width(this.uiWidth1 * 1.5f)));
-									SoundTool.soundData.soundClips[selection].maxDistance = float.Parse(EditorGUILayout.TextField("MaxDistance", SoundTool.soundData.soundClips[selection].maxDistance.ToString(), GUILayout.Width(this.uiWidth1 * 1.5f)));
-									SoundTool.soundData.soundClips[selection].spatialBlend = EditorGUILayout.Slider("PanLevel", SoundTool.soundData.soundClips[selection].spatialBlend, 0.0f, 1.0f, GUILayout.Width(this.uiWidth1 * 1.5f));
+									soundData.soundClips[selection].clipPath = EditorHelper.GetPath(this.soundSource);
+									soundData.soundClips[selection].clipName = this.soundSource.name;
+									soundData.soundClips[selection].pitch = EditorGUILayout.Slider("Pitch", soundData.soundClips[selection].pitch, -3.0f, 3.0f, GUILayout.Width(this.uiWidth1 * 1.5f));
+									soundData.soundClips[selection].dopplerLevel = EditorGUILayout.Slider("Doppler Level", soundData.soundClips[selection].dopplerLevel, 0.0f, 5.0f, GUILayout.Width(this.uiWidth1 * 1.5f));
+									soundData.soundClips[selection].rollOffMode = (AudioRolloffMode)EditorGUILayout.EnumPopup("Volume RollOff", soundData.soundClips[selection].rollOffMode, GUILayout.Width(this.uiWidth1 * 1.5f));
+									soundData.soundClips[selection].minDistance = float.Parse(EditorGUILayout.TextField("MinDistance", soundData.soundClips[selection].minDistance.ToString(), GUILayout.Width(this.uiWidth1 * 1.5f)));
+									soundData.soundClips[selection].maxDistance = float.Parse(EditorGUILayout.TextField("MaxDistance", soundData.soundClips[selection].maxDistance.ToString(), GUILayout.Width(this.uiWidth1 * 1.5f)));
+									soundData.soundClips[selection].spatialBlend = EditorGUILayout.Slider("PanLevel", soundData.soundClips[selection].spatialBlend, 0.0f, 1.0f, GUILayout.Width(this.uiWidth1 * 1.5f));
 
 								}
 								else
 								{
-									SoundTool.soundData.soundClips[selection].clipName = string.Empty;
-									SoundTool.soundData.soundClips[selection].clipPath = string.Empty;
+									soundData.soundClips[selection].clipName = string.Empty;
+									soundData.soundClips[selection].clipPath = string.Empty;
 								}
 
 								EditorGUILayout.Separator();
 								if (GUILayout.Button("Add Loop", GUILayout.Width(this.uiWidth1)))
 								{
-									SoundTool.soundData.soundClips[selection].AddLoop();
+									soundData.soundClips[selection].AddLoop();
 								}
-								for (int i = 0; i < SoundTool.soundData.soundClips[selection].checkTime.Length; i++)
+								for (int i = 0; i < soundData.soundClips[selection].checkTime.Length; i++)
 								{
 									EditorGUILayout.BeginVertical("box");
 									{
 										GUILayout.Label("Loop step " + i, EditorStyles.boldLabel);
 										if (GUILayout.Button("Remove", GUILayout.Width(this.uiWidth2)))
 										{
-											SoundTool.soundData.soundClips[selection].RemoveLoop(i);
+											soundData.soundClips[selection].RemoveLoop(i);
 											return;
 										}
-										SoundTool.soundData.soundClips[selection].checkTime[i] = EditorGUILayout.FloatField("Check Time", SoundTool.soundData.soundClips[selection].checkTime[i], GUILayout.Width(this.uiWidth1));
-										SoundTool.soundData.soundClips[selection].setTime[i] = EditorGUILayout.FloatField("Set Time", SoundTool.soundData.soundClips[selection].setTime[i], GUILayout.Width(this.uiWidth1));
+										soundData.soundClips[selection].checkTime[i] = EditorGUILayout.FloatField("Check Time", soundData.soundClips[selection].checkTime[i], GUILayout.Width(this.uiWidth1));
+										soundData.soundClips[selection].setTime[i] = EditorGUILayout.FloatField("Set Time", soundData.soundClips[selection].setTime[i], GUILayout.Width(this.uiWidth1));
 									}
 									EditorGUILayout.EndVertical();
 								}
@@ -192,7 +192,7 @@ public class SoundTool : EditorWindow
 			if (GUILayout.Button("Save Settings"))
 			{
 				GUI.FocusControl("Save");
-				SoundTool.soundData.SaveData();
+				soundData.SaveData();
 				CreateEnumStructure();
 				AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 			}
@@ -213,11 +213,11 @@ public class SoundTool : EditorWindow
 
 		StringBuilder builder = new StringBuilder();
 		builder.AppendLine();
-		for (int i = 0; i < SoundTool.soundData.names.Length; i++)
+		for (int i = 0; i < soundData.names.Length; i++)
 		{
-			if (!SoundTool.soundData.names[i].ToLower().Contains("none"))
+			if (!soundData.names[i].ToLower().Contains("none"))
 			{
-				builder.AppendLine("    " + SoundTool.soundData.names[i] + " = " + i.ToString() + ",");
+				builder.AppendLine("    " + soundData.names[i] + " = " + i.ToString() + ",");
 			}
 		}
 
