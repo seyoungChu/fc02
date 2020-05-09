@@ -183,7 +183,7 @@ namespace FC
                 BehaviourController.GetCamScript.BounceVertical(weapons[weapon].recoilAngle);
 
                 // Cast the shot to find a target.
-                Vector3 imprecision = Random.Range(-shotErrorRate, shotErrorRate) * BehaviourController.playerCamera.right;
+                Vector3 imprecision = Random.Range(-shotErrorRate, shotErrorRate) * BehaviourController.playerCamera.forward;
                 Ray ray = new Ray(BehaviourController.playerCamera.position,
                     BehaviourController.playerCamera.forward + imprecision);
                 RaycastHit hit = default(RaycastHit);
