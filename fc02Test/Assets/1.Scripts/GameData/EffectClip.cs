@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//이펙트 프리팹과 경로와 타입을 데이터를 가지고 있으며
+//프리팹 프리로딩 기능을 갖고 있다. - 사전 로딩 기능은 풀링을 위한 기능이기도하다.
+//이펙트 인스턴스 기능도 갖고 있으며 추후 풀링 매니저를 만들 경우 연관해서 사용하면 된다.
+
 public class EffectClip
 {
 	public int realID = 0;

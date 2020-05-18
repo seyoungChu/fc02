@@ -163,12 +163,5 @@ namespace FC
             //AudioSource.PlayClipAtPoint(controller.classStats.shotSound, controller.enemyAnimation.gunMuzzle.position, 2f);
             SoundManager.Instance.PlayShotSound(controller.classID,controller.enemyAnimation.gunMuzzle.position, 2f);
         }
-
-        // Function to destroy the muzzle flash.
-        public IEnumerator DestroyFlash(GameObject flash)
-        {
-            yield return new WaitForSeconds(0.1f);
-            Destroy(flash);
-        }
     }
 }

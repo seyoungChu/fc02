@@ -17,8 +17,8 @@ namespace FC
         public float maxVerticalAngle = 30f; // Camera max clamp angle. 
         public float minVerticalAngle = -60f; // Camera min clamp angle.
         public float recoilAngleBounce = 5.0f;
-        private float angleH = 0; // Float to store camera horizontal angle related to mouse movement.
-        private float angleV = 0; // Float to store camera vertical angle related to mouse movement.
+        private float angleH = 0f; // Float to store camera horizontal angle related to mouse movement.
+        private float angleV = 0f; // Float to store camera vertical angle related to mouse movement.
         private Transform cameraTransform; // This transform.
         private Camera myCamera;
         private Vector3 relCameraPos; // Current camera position relative to the player.
@@ -66,8 +66,8 @@ namespace FC
         {
             // Get mouse movement to orbit the camera.
             // 마우스 이동 값:
-            angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed;
-            angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * verticalAimingSpeed;
+            angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1f, 1f) * horizontalAimingSpeed;
+            angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1f, 1f) * verticalAimingSpeed;
             
             // Set vertical movement limit.
             angleV = Mathf.Clamp(angleV, minVerticalAngle, targetMaxVerticalAngle);
@@ -76,8 +76,8 @@ namespace FC
             angleV = Mathf.LerpAngle(angleV, angleV + recoilAngle, 10f * Time.deltaTime);
 
             // Set camera orientation.
-            Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
-            Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
+            Quaternion camYRotation = Quaternion.Euler(0f, angleH, 0f);
+            Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0f);
             cameraTransform.rotation = aimRotation;
 
             // Set FOV.
@@ -85,12 +85,12 @@ namespace FC
 
             // Test for collision with the environment based on current camera position.
             Vector3 baseTempPosition = player.position + camYRotation * targetPivotOffset;
-            Vector3 noCollisionOffset = targetCamOffset;
-            for (float zOffset = targetCamOffset.z; zOffset <= 0; zOffset += 0.5f)
+            Vector3 noCollisionOffset = targetCamOffset; //에임을 할때 카메라의 오프셋값. 평소와 조준중엔 다르다!.
+            for (float zOffset = targetCamOffset.z; zOffset <= 0f; zOffset += 0.5f)
             {
                 noCollisionOffset.z = zOffset;
                 if (DoubleViewingPosCheck(baseTempPosition + aimRotation * noCollisionOffset, Mathf.Abs(zOffset)) ||
-                    zOffset == 0)
+                    zOffset == 0f)
                 {
                     break;
                 }

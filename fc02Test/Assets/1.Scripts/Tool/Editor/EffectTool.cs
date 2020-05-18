@@ -5,7 +5,7 @@ using UnityEditor;
 using System.IO;
 using System;
 using System.Text;
-
+using UnityObject = UnityEngine.Object;
 public class EffectTool : EditorWindow
 {
     // UI 그리는데 필요한 변수들.
@@ -48,69 +48,16 @@ public class EffectTool : EditorWindow
         EditorGUILayout.BeginVertical();
         {
             //+ 상단의 Add, Copy, Remove
-            EditorGUILayout.BeginHorizontal();
-            {
-                if (GUILayout.Button("Add", GUILayout.Width(this.uiWidth200)))
-                {
-                    effectData.AddEffect("NewEffect");
-                    selection = effectData.GetDataCount() - 1;
-                    effectSource = null;
-                    GUI.FocusControl("ID");
-                }
-
-                GUI.SetNextControlName("Copy");
-                if (GUILayout.Button("Copy", GUILayout.Width(this.uiWidth200)))
-                {
-                    GUI.FocusControl("Copy");
-                    effectData.Copy(this.selection);
-                    effectSource = null;
-                    selection = effectData.GetDataCount() - 1;
-                }
-
-                if (effectData.GetDataCount() > 1)
-                {
-                    GUI.SetNextControlName("Remove");
-                    if (GUILayout.Button("Remove", GUILayout.Width(uiWidth200)))
-                    {
-                        GUI.FocusControl("Remove");
-                        effectSource = null;
-                        effectData.RemoveData(this.selection);
-                    }
-                }
-
-                if (selection > effectData.GetDataCount() - 1)
-                {
-                    selection = effectData.GetDataCount() - 1;
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
+            UnityObject source = effectSource;
+            EditorHelper.EditorToolTopLayer(effectData,ref selection,ref source, this.uiWidth200);
+            effectSource = (GameObject) source;
+            
             EditorGUILayout.BeginHorizontal();
             {
                 //+ 목록 리스트를 보여준다.
-                EditorGUILayout.BeginVertical(GUILayout.Width(uiWidth300));
-                {
-                    EditorGUILayout.Separator();
-                    EditorGUILayout.BeginVertical("box");
-                    {
-                        SP1 = EditorGUILayout.BeginScrollView(this.SP1);
-                        {
-                            if (effectData.GetDataCount() > 0)
-                            {
-                                int __prev = selection;
-                                selection = GUILayout.SelectionGrid(this.selection,
-                                    effectData.GetNameList(true), 1);
-                                if (__prev != selection)
-                                {
-                                    effectSource = null;
-                                }
-                            }
-                        }
-                        EditorGUILayout.EndScrollView();
-                    }
-                    EditorGUILayout.EndVertical();
-                }
-                EditorGUILayout.EndVertical();
+                EditorHelper.EditorToolListLayer(ref SP1,effectData,ref selection,ref source,uiWidth300);
+                effectSource = (GameObject) source;
+                
 
                 //+ 설정 부분.
                 EditorGUILayout.BeginVertical();

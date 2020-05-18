@@ -33,7 +33,7 @@ public class SoundData : BaseData
 
         if (asset == null || asset.text == null)
         {
-            this.AddSound("NewSound");
+            this.AddData("NewSound");
             return;
         }
 
@@ -183,7 +183,7 @@ public class SoundData : BaseData
     /// <summary>
     /// 
     /// </summary>
-    public void AddSound(string name)
+    public override int AddData(string newName)
     {
         if (this.names == null)
         {
@@ -195,8 +195,11 @@ public class SoundData : BaseData
             this.names = ArrayHelper.Add(name, this.names);
             this.soundClips = ArrayHelper.Add(new SoundClip(), this.soundClips);
         }
+
+        return this.names.Length;
     }
 
+   
     /// <summary>
     /// 
     /// </summary>

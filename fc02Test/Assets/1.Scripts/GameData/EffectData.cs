@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//이펙트 클립데이터와 이펙트 데이터 파일이름 과 경로를 가지고 있으며 저장 파일을 읽고 쓰는 기능을 가지고 있따.
 
 public class EffectData : BaseData
 {
@@ -28,7 +29,7 @@ public class EffectData : BaseData
 
 		if (asset == null || asset.text == null)
 		{
-			this.AddEffect("NewEffect");
+			this.AddData("NewEffect");
 			return;
 		}
 
@@ -80,11 +81,8 @@ public class EffectData : BaseData
 			xml.WriteEndDocument();
 		}
 	}
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="name"></param>
-	public void AddEffect(string name)
+
+	public override int AddData(string newName)
 	{
 		if (this.names == null)
 		{
@@ -96,7 +94,11 @@ public class EffectData : BaseData
 			this.names = ArrayHelper.Add(name, this.names);
 			this.effectClips = ArrayHelper.Add(new EffectClip(), this.effectClips);
 		}
+
+		return this.names.Length;
 	}
+	
+	
 	/// <summary>
 	/// 
 	/// </summary>
