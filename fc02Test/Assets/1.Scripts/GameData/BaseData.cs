@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //데이터의 근간이 되는 클래스.
-//공통적인 데이터를 가지고 있다. 지금은 이름이랑 결로만 가지고 있다.
+//공통적인 데이터를 가지고 있다. 지금은 이름만 가지고 있다.
 //데이터 갯수와 이름 리스트를 얻을 수 있다.
 public class BaseData : ScriptableObject
 {
@@ -63,13 +63,10 @@ public class BaseData : ScriptableObject
 
     public virtual void RemoveData(int index)
     {
-        
     }
 
     public virtual void Copy(int index)
     {
-        
     }
-
-
+    
 }

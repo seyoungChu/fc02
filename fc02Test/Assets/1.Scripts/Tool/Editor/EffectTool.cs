@@ -14,14 +14,11 @@ public class EffectTool : EditorWindow
     private int selection = 0;
     private Vector2 SP1 = new Vector2(0, 0);
     private Vector2 SP2 = new Vector2(0, 0);
-
-
+    
     // 이펙트 클립.
     private GameObject effectSource = null;
-
     // effect data
     private static EffectData effectData;
-
 
     [MenuItem("Tools/Effect Tool")]
     static void Init()

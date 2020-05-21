@@ -5,25 +5,16 @@ using UnityEngine;
 public class SoundClip
 {
     public SoundPlayType playType = SoundPlayType.None;
-
     public string clipName = string.Empty;
-
     public string clipPath = string.Empty;
-
     public float maxVolume = 1.0f;
-
     public bool isLoop = false;
-
     public float[] checkTime = new float[0];
-
     public float[] setTime = new float[0];
-
     public int realID = 0;
 
     private AudioClip clip = null;
-
     public int currentLoop = 0;
-
     public float pitch = 1.0f;
     public float dopplerLevel = 1.0f;
     public AudioRolloffMode rollOffMode = AudioRolloffMode.Logarithmic;
@@ -43,29 +34,10 @@ public class SoundClip
     {
         this.clipPath = _clipPath;
         this.clipName = _clipName;
-
-        string clipPathLower = this.clipPath.ToLower();
-
-        if(clipPathLower.Contains("bgm") == true)
-        {
-            this.playType = SoundPlayType.BGM;
-        }
-        else if(clipPathLower.Contains("effect") == true)
-        {
-            this.playType = SoundPlayType.EFFECT;
-        }
-        else if(clipPathLower.Contains("ui") == true)
-        {
-            this.playType = SoundPlayType.UI;
-        }else
-        {
-            this.playType = SoundPlayType.None;
-        }
     }
 
     public void PreLoad()
     {
-        
         if(this.clip == null)
         {
             string fullPath = this.clipPath + this.clipName;

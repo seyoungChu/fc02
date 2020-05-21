@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using System;
-using NPOI.SS.Formula.Functions;
-
 public class SoundManager : SingletonMonobehaviour<SoundManager>
 {
     public const string MasteGroupName = "Master";
@@ -44,12 +42,6 @@ public class SoundManager : SingletonMonobehaviour<SoundManager>
     private SoundClip lastSound = null;
     private float minVolume = -80.0f;
     private float maxVolume = 0.0f;
-    //private bool nowMute = false;
-    //private float lastEffectVolume = 0.0f;
-    //private float lastUIVolume = 0.0f;
-    //private float lastBGMVolume = 0.0f;
-
-    //private AudioListener audioListener = null;
 
     private void Start()
     {
@@ -114,12 +106,6 @@ public class SoundManager : SingletonMonobehaviour<SoundManager>
                 this.effect_audios[i].outputAudioMixerGroup = mixer.FindMatchingGroups(EffectGroupName)[0];
             }
         }
-
-        // if (this.audioListener == null)
-        // {
-        //     this.audioListener = gameObject.AddComponent<AudioListener>();
-        // }
-        //SetBGMVolume,GetBGMVolume -> after.
         VolumeInit();
     }
 
@@ -571,19 +557,6 @@ public class SoundManager : SingletonMonobehaviour<SoundManager>
         }
 
         this.PlayOneShot(DataManager.SoundData().GetCopy(index));
-    }
-
-    public void PlayOneShot(string clipName)
-    {
-        try
-        {
-            SoundList soundList = (SoundList) Enum.Parse(typeof(SoundList), clipName);
-            this.PlayOneShot((int) soundList);
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError("Plz Check Sound Clip Name :" + clipName + "  / " + ex.Message.ToString());
-        }
     }
 
     public void Stop(bool allStop = false)

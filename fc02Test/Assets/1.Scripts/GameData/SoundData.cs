@@ -5,7 +5,8 @@ using System.Xml;
 using System.IO;
 
 /// <summary>
-/// 
+/// 사운드 데이터 클래스 , 사운드 클립을 배열로 소지하고 있으며 , 사운드 데이터를 읽고 저장
+/// 뿐만아니라 사전 로딩 기능도 있어 필요시 풀링에 사용한다.
 /// </summary>
 public class SoundData : BaseData
 {
@@ -76,7 +77,8 @@ public class SoundData : BaseData
                             this.soundClips[currentID].dopplerLevel = float.Parse(reader.ReadString());
                             break;
                         case "rolloffmode":
-                            this.soundClips[currentID].rollOffMode = (AudioRolloffMode)Enum.Parse(typeof(AudioRolloffMode), reader.ReadString());
+                            this.soundClips[currentID].rollOffMode = (AudioRolloffMode)
+                                Enum.Parse(typeof(AudioRolloffMode), reader.ReadString());
                             break;
                         case "mindistance":
                             this.soundClips[currentID].minDistance = float.Parse(reader.ReadString());
@@ -99,15 +101,18 @@ public class SoundData : BaseData
                         case "checktimecount":
                             break;
                         case "checktime":
-                            this.SetLoopTime(true, this.soundClips[currentID], reader.ReadString());
+                            this.SetLoopTime(true, this.soundClips[currentID], 
+                                reader.ReadString());
                             break;
                         case "settimecount":
                             break;
                         case "settime":
-                            this.SetLoopTime(false, this.soundClips[currentID], reader.ReadString());
+                            this.SetLoopTime(false, this.soundClips[currentID], 
+                                reader.ReadString());
                             break;
                         case "type":
-                            this.soundClips[currentID].playType = (SoundPlayType)System.Enum.Parse(typeof(SoundPlayType), reader.ReadString());
+                            this.soundClips[currentID].playType = (SoundPlayType)
+                                System.Enum.Parse(typeof(SoundPlayType), reader.ReadString());
                             break;
 
 
@@ -129,7 +134,8 @@ public class SoundData : BaseData
     {
 		Debug.LogWarning("xmlFilePath :" + xmlFilePath);
 		Debug.LogWarning("xmlFileName :" + xmlFileName);
-        using (XmlTextWriter xml = new XmlTextWriter(xmlFilePath + xmlFileName, System.Text.Encoding.Unicode))
+        using (XmlTextWriter xml = new XmlTextWriter(xmlFilePath + xmlFileName, 
+            System.Text.Encoding.Unicode))
         {
             xml.WriteStartDocument();
             xml.WriteStartElement(SOUND);
