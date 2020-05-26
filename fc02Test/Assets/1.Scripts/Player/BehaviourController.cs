@@ -4,6 +4,14 @@ using UnityEngine;
 using FC;
 namespace FC
 {
+    //비해비어 컨트롤러
+    //현재 비해비어 
+    //기본 비해비어
+    //오버라이딩 비해비어
+    //락 비해비어.
+    //이동
+    //땅에 서있는지
+    ///비해비어 업데이트 ( 업데이트, 늦은 업데이트, 고정 업데이트 )
     public class BehaviourController : MonoBehaviour //0
     {
         private List<GenericBehaviour> behaviours; //2

@@ -88,6 +88,14 @@ namespace FC
             isColliding = false;
         }
 
+                // Remove vertical rigidbody velocity.
+        private void RemoveVerticalVelocity()
+        {
+            Vector3 horizontalVelocity = BehaviourController.GetRigidBody.velocity;
+            horizontalVelocity.y = 0;
+            BehaviourController.GetRigidBody.velocity = horizontalVelocity;
+        }
+
         // Execute the idle and walk/run jump movements.
         void JumpManagement()
         {
@@ -169,13 +177,7 @@ namespace FC
             BehaviourController.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
         }
 
-        // Remove vertical rigidbody velocity.
-        private void RemoveVerticalVelocity()
-        {
-            Vector3 horizontalVelocity = BehaviourController.GetRigidBody.velocity;
-            horizontalVelocity.y = 0;
-            BehaviourController.GetRigidBody.velocity = horizontalVelocity;
-        }
+
 
         // Update is used to set features regardless the active behaviour.
         void Update()
