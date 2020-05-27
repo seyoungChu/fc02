@@ -16,9 +16,9 @@ namespace FC
     {
         private List<GenericBehaviour> behaviours; //2
         private List<GenericBehaviour> overridingBehaviours; //2
-        private int currentBehaviour;
-        private int defaultBehaviour;
-        private int behaviourLocked;
+        private int currentBehaviour; //현재 비해비어 구별용 해시값.
+        private int defaultBehaviour; //기본 비해비어 구별용 해시값.
+        private int behaviourLocked; //잠긴 비해비어 구별용 해시값.
 
         //캐싱//
         public Transform playerCamera;
@@ -28,16 +28,16 @@ namespace FC
 
         private float h; // Horizontal Axis.
         private float v; // Vertical Axis.
-        public float turnSmoothing = 0.06f; // Speed of turn when moving to match camera facing.
-        private bool changedFOV; // Boolean to store when the sprint action has changed de camera FOV.
-        public float sprintFOV = 100f; // the FOV to use on the camera when player is sprinting.
-        private Vector3 lastDirection; // Last direction the player was moving.
-        private bool sprint; // Boolean to determine whether or not the player activated the sprint mode.        
-        private int hFloat; // Animator variable related to Horizontal Axis.
-        private int vFloat; // Animator variable related to Vertical Axis.
-        private int groundedBool; // Animator variable related to whether or not the player is on the ground.
-        private Vector3 colExtents; // Collider extents for ground test. 
-                                    // Get current horizontal and vertical axes.
+        public float turnSmoothing = 0.06f; //카메라를 향하도록 움직일때의 회전속도.Speed of turn when moving to match camera facing.
+        private bool changedFOV;//달리기동작이 카메라 시야각이 변경되었을때 저장여부 Boolean to store when the sprint action has changed de camera FOV.
+        public float sprintFOV = 100f; //달리기 시야각.the FOV to use on the camera when player is sprinting.
+        private Vector3 lastDirection; //마지막 방향.Last direction the player was moving.
+        private bool sprint; //플레이어가 달리기모드인가?Boolean to determine whether or not the player activated the sprint mode.        
+        private int hFloat; //애니메이터 관련 가로축 값.Animator variable related to Horizontal Axis.
+        private int vFloat; //애니메이터 관련 세로축 값.Animator variable related to Vertical Axis.
+        private int groundedBool; //애니메이터 지상에 있는지의 값. Animator variable related to whether or not the player is on the ground.
+        private Vector3 colExtents; // 땅 테스트를 위한 충돌체 확장. Collider extents for ground test. 
+        // Get current horizontal and vertical axes.
         public float GetH { get => h; }
         public float GetV { get => v; }
         public ThirdPersonOrbitCam GetCamScript { get => camScript; }// Get the player camera script.        
@@ -63,15 +63,15 @@ namespace FC
         // Check if the player is moving.
         public bool IsMoving()
         {
-            return Mathf.Abs(h) > Mathf.Epsilon || Mathf.Abs(v) > Mathf.Epsilon;
             //return (h != 0) || (v != 0);
+            return Mathf.Abs(h) > Mathf.Epsilon || Mathf.Abs(v) > Mathf.Epsilon;
         }
 
         // Check if the player is moving on the horizontal plane.
         public bool IsHorizontalMoving()
         {
-            return Mathf.Abs(h) > Mathf.Epsilon;
             //return h != 0;
+            return Mathf.Abs(h) > Mathf.Epsilon;
         }
 
         // Check if player is sprinting.
@@ -222,8 +222,8 @@ namespace FC
             currentBehaviour = behaviourCode;
         }
 
-        // Attempt to set a custom behaviour as the active one.
-        // Always changes from default behaviour to the passed one.
+        // 비해비어 설정.Attempt to set a custom behaviour as the active one.
+        // 기본 동작에서 설정한 동작으로 변경.Always changes from default behaviour to the passed one.
         public void RegisterBehaviour(int behaviourCode)
         {
             if (currentBehaviour == defaultBehaviour)
@@ -232,7 +232,7 @@ namespace FC
             }
         }
 
-        // Attempt to deactivate a player behaviour and return to the default one.
+        // 비해비어 해제 설정.Attempt to deactivate a player behaviour and return to the default one.
         public void UnregisterBehaviour(int behaviourCode)
         {
             if (currentBehaviour == behaviourCode)
@@ -241,8 +241,8 @@ namespace FC
             }
         }
 
-        // Attempt to override any active behaviour with the behaviours on queue.
-        // Use to change to one or more behaviours that must overlap the active one (ex.: aim behaviour).
+        // 대체 비해비어 추가.Attempt to override any active behaviour with the behaviours on queue.
+        // 활성화 비해비어와 겹치는 비해비어로 변경하는데 사용(조준).Use to change to one or more behaviours that must overlap the active one (ex.: aim behaviour).
         public bool OverrideWithBehaviour(GenericBehaviour behaviour)
         {
             // Behaviour is not on queue.
@@ -271,8 +271,8 @@ namespace FC
             return false;
         }
 
-        // Attempt to revoke the overriding behaviour and return to the active one.
-        // Called when exiting the overriding behaviour (ex.: stopped aiming).
+        // 우선 동작을 취소. Attempt to revoke the overriding behaviour and return to the active one.
+        // 우선 동작을 종료할때 호출 (조준 중지)Called when exiting the overriding behaviour (ex.: stopped aiming).
         public bool RevokeOverridingBehaviour(GenericBehaviour behaviour)
         {
             if (overridingBehaviours.Contains(behaviour))
@@ -285,11 +285,14 @@ namespace FC
         }
 
 
-        // Check if any or a specific behaviour is currently overriding the active one.
+        // 우선동작이 있는지, 포함하고있는지 등의 여부Check if any or a specific behaviour is currently overriding the active one.
         public bool IsOverriding(GenericBehaviour behaviour = null)
         {
             if (behaviour == null)
+            {
                 return overridingBehaviours.Count > 0;
+            }
+                
             return overridingBehaviours.Contains(behaviour);
         }
 

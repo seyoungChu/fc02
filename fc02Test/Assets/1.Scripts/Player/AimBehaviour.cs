@@ -5,12 +5,15 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 총 겨누기.
+    /// </summary>
     public class AimBehaviour : GenericBehaviour
     {
         public Texture2D crosshair; // Crosshair texture.
-        public float aimTurnSmoothing = 0.15f; // Speed of turn response when aiming to match camera facing.
-        public Vector3 aimPivotOffset = new Vector3(0.5f, 1.2f, 0f); // Offset to repoint the camera when aiming.
-        public Vector3 aimCamOffset = new Vector3(0f, 0.4f, -0.7f); // Offset to relocate the camera when aiming.
+        public float aimTurnSmoothing = 0.15f; //카메라를 향하도록 조준 할 때 회전 속도 응답. Speed of turn response when aiming to match camera facing.
+        public Vector3 aimPivotOffset = new Vector3(0.5f, 1.2f, 0f); //조준 할 때 카메라 포인트 오프셋Offset to repoint the camera when aiming.
+        public Vector3 aimCamOffset = new Vector3(0f, 0.4f, -0.7f); //조준할때 카메라 위치 오프셋 Offset to relocate the camera when aiming.
 
         private int aimBool; // Animator variable related to aiming.
         private bool aim; // Boolean to determine whether or not the player is aiming.
@@ -52,7 +55,7 @@ namespace FC
             // Peeking corner situation.
             if (peekCorner)
             {
-                // Rotate only player upper body when peeking a corner.
+                //조준중일 때 플레이어 상체 만 회전시킵니다. Rotate only player upper body when peeking a corner.
                 transform.rotation = Quaternion.LookRotation(-BehaviourController.GetLastDirection());
                 targetRotation *= Quaternion.Euler(initialRootRotation);
                 targetRotation *= Quaternion.Euler(initialHipsRotation);
@@ -92,7 +95,7 @@ namespace FC
                 {
                     signal = (int)Mathf.Sign(BehaviourController.GetH);
                 }
-
+                
                 aimCamOffset.x = Mathf.Abs(aimCamOffset.x) * signal;
                 aimPivotOffset.x = Mathf.Abs(aimPivotOffset.x) * signal;
                 yield return new WaitForSeconds(0.1f);

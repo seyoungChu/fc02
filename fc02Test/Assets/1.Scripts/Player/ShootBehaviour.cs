@@ -13,7 +13,7 @@ namespace FC
         public float shotErrorRate = 0.01f; // Shooting error margin. 0 is most acurate.
         public float shotRateFactor = 1f; // Rate of fire parameter. Higher is faster rate.
         public float armsRotation = 8f; // Rotation of arms to align with aim, according player heigh.
-
+        //Ignore Raycast, Ignore Shot, Cover Invisible, Player,
         public LayerMask shotMask = ~((1 << 2) | (1 << 9) | // Layer mask to cast shots.
                                       (1 << 10) | (1 << 11));
 

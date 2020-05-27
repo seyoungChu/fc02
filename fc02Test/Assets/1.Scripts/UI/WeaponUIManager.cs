@@ -48,15 +48,15 @@ namespace FC
             foreach(Transform bullet in bulletMag.transform)
             {
                 if(b < bulletsLeft)
-                {
+                {    //남은거
                     bullet.GetComponent<Image>().color = bulletColor;
                 }
                 else if(b >= fullMag)
-                {
+                {    //넘치는 건 일단 그리지 않습니다.
                     bullet.GetComponent<Image>().color = nobulletColor;
                 }
                 else
-                {
+                {    //사용한 탄.
                     bullet.GetComponent<Image>().color = emptyBulletColor;
                 }
                 b++;

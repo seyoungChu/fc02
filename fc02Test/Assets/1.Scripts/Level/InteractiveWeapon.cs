@@ -8,41 +8,53 @@ namespace FC
 {
     public class InteractiveWeapon : MonoBehaviour
     {
-        public string label;                                      // The weapon name. Same name will treat weapons as same regardless game object's name.
-        public SoundList shotSound, reloadSound,                  // Audio clips for shoot and reload.
-            pickSound, dropSound, noBulletSound;                  // Audio clips for pickweapon , drop weapon, and no bullet shot try.
-        public Sprite sprite;                                     // Weapon srpite to show on screen HUD.
-        public Vector3 rightHandPosition;                         // Position offsets relative to the player's right hand.
-        public Vector3 relativeRotation;                          // Rotation Offsets relative to the player's right hand.
-        public float bulletDamage = 10f;                          // Damage of one shot.
-        public float recoilAngle;                                 // Angle of weapon recoil.
-        public enum WeaponType                                    // Weapon types, related to player's shooting animations.
+        public string label; // The weapon name. Same name will treat weapons as same regardless game object's name.
+
+        public SoundList shotSound,
+            reloadSound, // Audio clips for shoot and reload.
+            pickSound,
+            dropSound,
+            noBulletSound; // Audio clips for pickweapon , drop weapon, and no bullet shot try.
+
+        public Sprite sprite; // Weapon srpite to show on screen HUD.
+        public Vector3 rightHandPosition; // Position offsets relative to the player's right hand.
+        public Vector3 relativeRotation; // Rotation Offsets relative to the player's right hand.
+        public float bulletDamage = 10f; // Damage of one shot.
+        public float recoilAngle; // Angle of weapon recoil.
+
+        public enum WeaponType // Weapon types, related to player's shooting animations.
         {
             NONE,
             SHORT,
             LONG
         }
-        public enum WeaponMode                                    // Weapon shooting modes.
+
+        public enum WeaponMode // Weapon shooting modes.
         {
             SEMI,
             BURST,
             AUTO
         }
-        public WeaponType type = WeaponType.NONE;                 // Default weapon type, change in Inspector.
-        public WeaponMode mode = WeaponMode.SEMI;                 // Default weapon mode, change in Inspector.
-        public int burstSize = 0;                                 // How many shot are fired on burst mode.
+
+        public WeaponType type = WeaponType.NONE; // Default weapon type, change in Inspector.
+        public WeaponMode mode = WeaponMode.SEMI; // Default weapon mode, change in Inspector.
+        public int burstSize = 0; // How many shot are fired on burst mode.
+
         [SerializeField]
-        private int mag, totalBullets;                            // Current mag capacity and total amount of bullets being carried.
-        private int fullMag, maxBullets;                          // Default mag capacity and total bullets for reset purposes.
-        private GameObject player, gameController;                // References to the player and the game controller.
-        private ShootBehaviour playerInventory;                   // Player's inventory to store weapons.
-        private SphereCollider interactiveRadius;                 // In-game radius of interaction with player.
-        private BoxCollider col;                                  // Weapon collider.
-        private Rigidbody rbody;                                  // Weapon rigidbody.
-        private WeaponUIManager weaponHUD;                        // Reference to on-screen weapon HUD.
-        private bool pickable;                                    // Boolean to store whether or not the weapon is pickable (player within radius).
-        private Transform pickupHUD;                              // Reference to the weapon pickup in-game label.
-        [Tooltip("muzzle Transform")][SerializeField] private Transform muzzleTransform;
+        private int mag, totalBullets; // Current mag capacity and total amount of bullets being carried.
+
+        private int fullMag, maxBullets; // Default mag capacity and total bullets for reset purposes.
+        private GameObject player, gameController; // References to the player and the game controller.
+        private ShootBehaviour playerInventory; // Player's inventory to store weapons.
+        private SphereCollider interactiveRadius; // In-game radius of interaction with player.
+        private BoxCollider col; // Weapon collider.
+        private Rigidbody rbody; // Weapon rigidbody.
+        private WeaponUIManager weaponHUD; // Reference to on-screen weapon HUD.
+        private bool pickable; // Boolean to store whether or not the weapon is pickable (player within radius).
+        private Transform pickupHUD; // Reference to the weapon pickup in-game label.
+
+        [Tooltip("muzzle Transform")] [SerializeField]
+        private Transform muzzleTransform;
 
         void Awake()
         {
@@ -53,6 +65,7 @@ namespace FC
             {
                 t.gameObject.layer = LayerMask.NameToLayer(TagAndLayer.LayerName.IgnoreRayCast);
             }
+
             player = GameObject.FindGameObjectWithTag(TagAndLayer.TagName.Player);
             playerInventory = player.GetComponent<ShootBehaviour>();
             gameController = GameObject.FindGameObjectWithTag(TagAndLayer.TagName.GameController);
@@ -61,6 +74,7 @@ namespace FC
             {
                 Debug.LogError("No ScreenHUD canvas found. Create ScreenHUD inside the GameController");
             }
+
             weaponHUD = GameObject.Find("ScreenHUD").GetComponent<WeaponUIManager>();
             pickupHUD = gameController.transform.Find("PickupHUD");
 
@@ -79,7 +93,9 @@ namespace FC
             // Assert that the gun muzzle is exists.
             if (!this.transform.Find("muzzle"))
             {
-                Debug.LogError(this.name + " muzzle is not present. Create a game object named 'muzzle' as a child of this game object");
+                Debug.LogError(
+                    this.name +
+                    " muzzle is not present. Create a game object named 'muzzle' as a child of this game object");
             }
 
             // Set default values.
@@ -90,7 +106,6 @@ namespace FC
             {
                 muzzleTransform = transform.Find("muzzle");
             }
-            
         }
 
         // Create the sphere of interaction with player.
@@ -125,10 +140,11 @@ namespace FC
         // Handle weapon collision with environment.
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.collider.gameObject != player && Vector3.Distance(transform.position, player.transform.position) <= 5f)
+            if (collision.collider.gameObject != player &&
+                Vector3.Distance(transform.position, player.transform.position) <= 5f)
             {
                 //AudioSource.PlayClipAtPoint(dropSound, transform.position, 0.5f);
-                SoundManager.Instance.PlayOneShotEffect((int)dropSound, transform.position, 0.5f);
+                SoundManager.Instance.PlayOneShotEffect((int) dropSound, transform.position, 0.5f);
             }
         }
 
@@ -172,9 +188,9 @@ namespace FC
             if (active)
             {
                 //AudioSource.PlayClipAtPoint(pickSound, transform.position, 0.5f);
-                SoundManager.Instance.PlayOneShotEffect((int)pickSound, transform.position, 0.5f);
+                SoundManager.Instance.PlayOneShotEffect((int) pickSound, transform.position, 0.5f);
             }
-                
+
             weaponHUD.Toggle(active);
             UpdateHUD();
         }
@@ -197,7 +213,7 @@ namespace FC
             if (mag == fullMag || totalBullets == 0)
             {
                 return false;
-            }                
+            }
             else if (totalBullets < fullMag - mag)
             {
                 mag += totalBullets;
@@ -227,12 +243,13 @@ namespace FC
                 UpdateHUD();
                 return true;
             }
+
             if (firstShot && noBulletSound != SoundList.None)
             {
                 //AudioSource.PlayClipAtPoint(noBulletSound, this.transform.Find("muzzle").position, 5f);
-                SoundManager.Instance.PlayOneShotEffect((int)noBulletSound, muzzleTransform.position,5f);
+                SoundManager.Instance.PlayOneShotEffect((int) noBulletSound, muzzleTransform.position, 5f);
             }
-                
+
             return false;
         }
 
@@ -249,5 +266,4 @@ namespace FC
             weaponHUD.UpdateWeaponHUD(sprite, mag, fullMag, totalBullets);
         }
     }
-
 }
