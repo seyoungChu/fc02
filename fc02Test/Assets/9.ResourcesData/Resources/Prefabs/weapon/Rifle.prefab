@@ -81,7 +81,7 @@ MonoBehaviour:
   pickSound: 0
   dropSound: 0
   noBulletSound: 0
-  sprite: {fileID: 21300000, guid: 4fc721bb145a13b409728eea63a0b8c8, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 4fc721bb145a13b409728eea63a0b8c8, type: 3}
   rightHandPosition: {x: 0.038, y: 0.044, z: 0.05}
   relativeRotation: {x: 90, y: 0, z: 180}
   bulletDamage: 9
@@ -89,8 +89,9 @@ MonoBehaviour:
   type: 2
   mode: 1
   burstSize: 3
-  mag: 32
+  currentMagCapacity: 0
   totalBullets: 160
+  pickupHUDLabel: {fileID: 0}
   muzzleTransform: {fileID: 6564896742028087290}
 --- !u!1 &4429021890264360306
 GameObject:

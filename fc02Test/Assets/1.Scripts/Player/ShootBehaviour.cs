@@ -1,61 +1,85 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FC;
+using Random = UnityEngine.Random;
+
 namespace FC
 {
     public class ShootBehaviour : GenericBehaviour
     {
-        public Texture2D aimCrosshair, shootCrosshair; // Crosshair textures for aiming and shooting.
-        public GameObject muzzleFlash, shot, sparks; // Game objects for shot effects.
-        public Material bulletHole; // Material for the bullet hole placed on target shot.
-        public int maxBulletHoles = 50; // Max bullet holes to draw on scene.
-        public float shotErrorRate = 0.01f; // Shooting error margin. 0 is most acurate.
-        public float shotRateFactor = 1f; // Rate of fire parameter. Higher is faster rate.
-        public float armsRotation = 8f; // Rotation of arms to align with aim, according player heigh.
-        //Ignore Raycast, Ignore Shot, Cover Invisible, Player,
-        public LayerMask shotMask = ~((1 << 2) | (1 << 9) | // Layer mask to cast shots.
-                                      (1 << 10) | (1 << 11));
+        public Texture2D aimCrosshair, shootCrosshair; //십자선 텍스쳐. Crosshair textures for aiming and shooting.
+        public GameObject muzzleFlash, shot, sparks; //발사 이펙트. Game objects for shot effects.
+        public Material bulletHole; //총알 구멍 매트리얼. Material for the bullet hole placed on target shot.
+        public int maxBulletHoles = 50; //씬에서 그릴수 있는 최대 총알 구멍 Max bullet holes to draw on scene.
+        public float shotErrorRate = 0.01f; // 발사 실패율 Shooting error margin. 0 is most acurate.
+        public float shotRateFactor = 1f; // 발사 속도 Rate of fire parameter. Higher is faster rate.
 
+        public float armsRotation = 8f; // 조준시 팔의 위치 회전.  Rotation of arms to align with aim, according player heigh.
+
+        //Ignore Raycast, Ignore Shot, Cover Invisible, Player,
+        // Layer mask to cast shots.
+        public LayerMask shotMask = //~((1 << 2) | (1 << 9) | (1 << 10) | (1 << 11));
+            ~(TagAndLayer.LayerMasking.IgnoreRaycastLayer | TagAndLayer.LayerMasking.IgnoreShotLayer |
+              TagAndLayer.LayerMasking.CoverInvisible | TagAndLayer.LayerMasking.Player);
+
+        //생명체인지 아닌지. 생명체가 아니면 총알 구멍을.
         public LayerMask organicMask; // Layer mask to define organic matter.
 
         [Header("Advanced Rotation Adjustments")]
-        public Vector3 LeftArmShortAim; // Local left arm rotation when aiming with a short gun.
+        //짧은 총, 피스톨 같은 총을 들었을때는 조준시 왼팔의 위치를 보정.
+        public Vector3
+            LeftArmShortAim = new Vector3(-4.0f, 0.0f, 2.0f); // Local left arm rotation when aiming with a short gun.
 
-        public Vector3 RightHandCover; // Local right hand rotation when holding a long gun and covering.
+        private int activeWeapon = 0; //사용무기 인덱스.  Index of the active weapon.
+        private int weaponTypeInt; //애니메이터 밸류, 무기 타입관련 Animator variable related to the weapon type.
+        private int changeWeaponTrigger; //애니메이터 밸류, 무기 교체 Animator trigger for changing weapon.
+        private int shootingTrigger; //애니메이터 트리거, 무기 발사. Animator trigger for shooting weapon.
 
-        private int activeWeapon = 0; //  Index of the active weapon.
-        private int weaponTypeInt; // Animator variable related to the weapon type.
-        private int changeWeaponTrigger; // Animator trigger for changing weapon.
-        private int shootingTrigger; // Animator trigger for shooting weapon.
-        private List<InteractiveWeapon> weapons; // Weapons inventory.
+        private List<InteractiveWeapon> weapons; //무기 인벤토리 Weapons inventory.
 
-        private int coveringBool,
-            aimBool, // Animator variables related to covering and aiming.
+        //애니메이터 밸류, 조준, 조준 블럭, 재장전.
+        private int aimBool, // Animator variables related to aiming.
             blockedAimBool, // Animator variable related to blocked aim.
             reloadBool; // Animator variable related to reloading.
 
+        //조준 중인지, 조준 블럭당했는지 여부.
         private bool isAiming, // Boolean to get whether or not the player is aiming.
             isAimBlocked; // Boolean to determine whether or not the aim is blocked.
 
+        //총구의 월드 포지션.
         private Transform gunMuzzle; // World position of the gun muzzle.
-        private float distToHand; // Distance from neck to hand.
-        private Vector3 castRelativeOrigin; // Position of neck to cast for blocked aim test.
-        private Dictionary<InteractiveWeapon.WeaponType, int> slotMap; // Map to designate weapon types to inventory slots.
+        private float distToHand; //목에서 손까지의 거리. Distance from neck to hand.
+
+        private Vector3 castRelativeOrigin; //블럭 조준 테스트를 위한 목의 위치. Position of neck to cast for blocked aim test.
+
+        //무기 유형을 인벤토리 슬롯에 지정하도록 매핑.
+        private Dictionary<InteractiveWeapon.WeaponType, int>
+            slotMap; // Map to designate weapon types to inventory slots.
+
+        //아바타 뼈대 본 트랜스폼
         private Transform hips, spine, chest, rightHand, leftArm; // Avatar bone transforms.
         private Vector3 initialRootRotation; // Initial root bone local rotation.
         private Vector3 initialHipsRotation; // Initial hips rotation related to the root bone.
         private Vector3 initialSpineRotation; // Initial spine rotation related to the hips bone.
         private Vector3 initialChestRotation; // Initial chest rotation related to the spine bone.
-        private float shotDecay, originalShotDecay = 0.5f; // Default shot lifetime. Use shotRateFactor to modify speed.
-        private List<GameObject> bulletHoles; // Bullet holes scene buffer.
-        private int bulletHoleSlot = 0; // Number of active bullet holes on scene.
-        private int burstShotCount = 0; // Number of burst shots fired.
-        private AimBehaviour aimBehaviour; // Reference to the aim behaviour.
-        private Texture2D originalCrosshair; // Original unarmed aim behaviour crosshair.
-        private bool isShooting = false; // Boolean to determine if player is holding shoot button.
-        private bool isChangingWeapon = false; // Boolean to determine if player is holding change weapon button.
-        private bool isShotAlive = false; // Boolean to determine if there is any active shot on scene.
+
+        private float
+            shotDecay, originalShotDecay = 0.5f; //기본 총알 수명 Default shot lifetime. Use shotRateFactor to modify speed.
+
+        private List<GameObject> bulletHoles; //피탄 구멍 Bullet holes scene buffer.
+        private int bulletHoleSlot = 0; //씬에서의 피탄 구멍 숫자. Number of active bullet holes on scene.
+        private int burstShotCount = 0; //산탄총 숫자. Number of burst shots fired.
+        private AimBehaviour aimBehaviour; //조준 비해비어 캐싱. Reference to the aim behaviour.
+        private Texture2D originalCrosshair; //기본 십자선. Original unarmed aim behaviour crosshair.
+        private bool isShooting = false; //사격중인지 Boolean to determine if player is holding shoot button.
+
+        private bool
+            isChangingWeapon = false; //무기를 변경중인지 Boolean to determine if player is holding change weapon button.
+
+        private bool
+            isShotAlive = false; //씬에 사라지지않은 총알이 있는지 확인. Boolean to determine if there is any active shot on scene.
 
         // Start is always called after any Awake functions.
         void Start()
@@ -63,7 +87,6 @@ namespace FC
             // Set up the references.
             weaponTypeInt = Animator.StringToHash(AnimatorKey.Weapon);
             aimBool = Animator.StringToHash(AnimatorKey.Aim);
-            coveringBool = Animator.StringToHash(AnimatorKey.Cover);
             blockedAimBool = Animator.StringToHash(AnimatorKey.BlockedAim);
             changeWeaponTrigger = Animator.StringToHash(AnimatorKey.ChangeWeapon);
             shootingTrigger = Animator.StringToHash(AnimatorKey.Shooting);
@@ -79,10 +102,10 @@ namespace FC
 
             // Create weapon slots. Different weapon types can be added in the same slot - ex.: (LONG_SPECIAL, 2) for a rocket launcher.
             slotMap = new Dictionary<InteractiveWeapon.WeaponType, int>
-        {
-            {InteractiveWeapon.WeaponType.SHORT, 1},
-            {InteractiveWeapon.WeaponType.LONG, 2}
-        };
+            {
+                {InteractiveWeapon.WeaponType.SHORT, 1},
+                {InteractiveWeapon.WeaponType.LONG, 2}
+            };
 
             // Get player's avatar bone transforms for IK.
             Transform neck = BehaviourController.GetAnim.GetBoneTransform(HumanBodyBones.Neck);
@@ -108,127 +131,7 @@ namespace FC
             distToHand = (rightHand.position - neck.position).magnitude * 1.5f;
         }
 
-        // Update is used to set features regardless the active behaviour.
-        private void Update()
-        {
-            // Handle shoot weapon action.
-            if (Input.GetAxisRaw(ButtonName.Shoot) != 0 && !isShooting && activeWeapon > 0 && burstShotCount == 0)
-            {
-                isShooting = true;
-                ShootWeapon(activeWeapon);
-            }
-            else if (isShooting && Input.GetAxisRaw(ButtonName.Shoot) == 0)
-            {
-                isShooting = false;
-            }
-            // Handle reload weapon action.
-            else if (Input.GetButtonUp(ButtonName.Reload) && activeWeapon > 0)
-            {
-                if (weapons[activeWeapon].StartReload())
-                {
-                    //AudioSource.PlayClipAtPoint(weapons[activeWeapon].reloadSound, gunMuzzle.position, 0.5f);
-                    SoundManager.Instance.PlayOneShotEffect((int)weapons[activeWeapon].reloadSound,gunMuzzle.position,0.5f);
-                    BehaviourController.GetAnim.SetBool(reloadBool, true);
-                }
-            }
-            // Handle drop weapon action.
-            else if (Input.GetButtonDown(ButtonName.Drop) && activeWeapon > 0)
-            {
-                // End reload paramters, drop weapon and change to another one in inventory.
-                EndReloadWeapon();
-                int weaponToDrop = activeWeapon;
-                ChangeWeapon(activeWeapon, 0);
-                weapons[weaponToDrop].Drop();
-                weapons[weaponToDrop] = null;
-            }
-            // Handle change weapon action.
-            else
-            {
-                if ((Input.GetAxisRaw(ButtonName.Change) != 0 && !isChangingWeapon))
-                {
-                    isChangingWeapon = true;
-                    int nextWeapon = activeWeapon + 1;
-                    ChangeWeapon(activeWeapon, (nextWeapon) % weapons.Count);
-                }
-                else if (Input.GetAxisRaw(ButtonName.Change) == 0)
-                {
-                    isChangingWeapon = false;
-                }
-            }
-
-            // Manage shot parameters after shooting action.
-            if (isShotAlive)
-            {
-                ShotDecay();
-            }                
-
-            isAiming = BehaviourController.GetAnim.GetBool(aimBool);
-        }
-
-        // Shoot the weapon.
-        private void ShootWeapon(int weapon, bool firstShot = true)
-        {
-            // Check conditions to shoot.
-            if (!isAiming || isAimBlocked || BehaviourController.GetAnim.GetBool(reloadBool) ||
-                !weapons[weapon].Shoot(firstShot))
-            {
-                return;
-            }
-            else
-            {
-                // Update parameters: burst count, trigger for animation, crosshair change and recoil camera bounce.
-                burstShotCount++;
-                BehaviourController.GetAnim.SetTrigger(shootingTrigger);
-                aimBehaviour.crosshair = shootCrosshair;
-                BehaviourController.GetCamScript.BounceVertical(weapons[weapon].recoilAngle);
-
-                // Cast the shot to find a target.
-                Vector3 imprecision = Random.Range(-shotErrorRate, shotErrorRate) * BehaviourController.playerCamera.forward;
-                Ray ray = new Ray(BehaviourController.playerCamera.position,
-                    BehaviourController.playerCamera.forward + imprecision);
-                RaycastHit hit = default(RaycastHit);
-                // Target was hit.
-                if (Physics.Raycast(ray, out hit, 500f, shotMask))
-                {
-                    if (hit.collider.transform != this.transform)
-                    {
-                        // Is the target organic?
-                        bool isOrganic = (organicMask == (organicMask | (1 << hit.transform.root.gameObject.layer)));
-                        // Handle shot effects on target.
-                        DrawShoot(weapons[weapon].gameObject, hit.point, hit.normal, hit.collider.transform, !isOrganic,
-                            !isOrganic);
-
-                        // Call the damage behaviour of target if exists.
-                        if (hit.collider)
-                        {
-                            hit.collider.SendMessageUpwards("HitCallback", new HealthBase.DamageInfo(
-                                    hit.point, ray.direction, weapons[weapon].bulletDamage, hit.collider),
-                                SendMessageOptions.DontRequireReceiver);
-                        }
-                            
-                    }
-                }
-                // No target was hit.
-                else
-                {
-                    Vector3 destination = (ray.direction * 500f) - ray.origin;
-                    // Handle shot effects without a specific target.
-                    DrawShoot(weapons[weapon].gameObject, destination, Vector3.up, null, false, false);
-                }
-
-                // Play shot sound.
-                //AudioSource.PlayClipAtPoint(weapons[weapon].shotSound, gunMuzzle.position, 5f);
-                SoundManager.Instance.PlayOneShotEffect((int)weapons[weapon].shotSound, gunMuzzle.position, 5f);
-                // Trigger alert callback
-                GameObject.FindGameObjectWithTag(TagAndLayer.TagName.GameController).SendMessage("RootAlertNearby", ray.origin,
-                    SendMessageOptions.DontRequireReceiver);
-                // Reset shot lifetime.
-                shotDecay = originalShotDecay;
-                isShotAlive = true;
-            }
-        }
-
-        // Manage the shot visual effects.
+        // 발사 비주얼 이펙트 담당. Manage the shot visual effects.
         private void DrawShoot(GameObject weapon, Vector3 destination, Vector3 targetNormal, Transform parent,
             bool placeSparks = true, bool placeBulletHole = true)
         {
@@ -241,18 +144,19 @@ namespace FC
             muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
 
             // Create the shot tracer and smoke trail particle.
-            GameObject instantShot = Object.Instantiate<GameObject>(shot);
+            GameObject instantShot =
+                EffectManager.Instance.EffectOneShot((int) EffectList.tracer,
+                    origin); //Object.Instantiate<GameObject>(shot);
             instantShot.SetActive(true);
-            instantShot.transform.position = origin;
             instantShot.transform.rotation = Quaternion.LookRotation(destination - origin);
             instantShot.transform.parent = shot.transform.parent;
 
             // Create the shot sparks at target.
             if (placeSparks)
             {
-                GameObject instantSparks = Object.Instantiate<GameObject>(sparks);
+                GameObject instantSparks =
+                    EffectManager.Instance.EffectOneShot((int) EffectList.sparks, destination);
                 instantSparks.SetActive(true);
-                instantSparks.transform.position = destination;
                 instantSparks.transform.parent = sparks.transform.parent;
             }
 
@@ -285,42 +189,93 @@ namespace FC
             }
         }
 
-        // Change the active weapon.
-        private void ChangeWeapon(int oldWeapon, int newWeapon)
+        // Shoot the weapon.
+        private void ShootWeapon(int weapon, bool firstShot = true)
         {
-            // Previously armed? Disable weapon.
-            if (oldWeapon > 0)
+            // Check conditions to shoot.
+            if (!isAiming || isAimBlocked || BehaviourController.GetAnim.GetBool(reloadBool) ||
+                !weapons[weapon].Shoot(firstShot))
             {
-                weapons[oldWeapon].gameObject.SetActive(false);
-                gunMuzzle = null;
-                weapons[oldWeapon].Toggle(false);
+                return;
             }
-
-            // Cycle trought empty slots to find next existing weapon or the no weapon slot.
-            while (weapons[newWeapon] == null && newWeapon > 0)
+            else
             {
-                newWeapon = (newWeapon + 1) % weapons.Count;
-            }
+                // Update parameters: burst count, trigger for animation, crosshair change and recoil camera bounce.
+                //버스트샷 카운트 증가, 발사 애니메이션 트리거 발동, 십자선 이미지 교체,
+                //반동 추가.
+                burstShotCount++;
+                BehaviourController.GetAnim.SetTrigger(shootingTrigger);
+                aimBehaviour.crosshair = shootCrosshair;
+                BehaviourController.GetCamScript.BounceVertical(weapons[weapon].recoilAngle);
 
-            // Next weapon exists? Activate it.
-            if (newWeapon > 0)
+                // Cast the shot to find a target.
+                //살짝 부정확하게 만든다.
+                Vector3 imprecision = Random.Range(-shotErrorRate, shotErrorRate) *
+                                      BehaviourController.playerCamera.forward;
+                Ray ray = new Ray(BehaviourController.playerCamera.position,
+                    BehaviourController.playerCamera.forward + imprecision);
+                RaycastHit hit = default(RaycastHit);
+                // Target was hit.
+                if (Physics.Raycast(ray, out hit, 500f, shotMask))
+                {
+                    if (hit.collider.transform != this.transform)
+                    {
+                        // Is the target organic?
+                        bool isOrganic = (organicMask == (organicMask |
+                                                          (1 << hit.transform.root.gameObject.layer)));
+                        // Handle shot effects on target.
+                        DrawShoot(weapons[weapon].gameObject, hit.point,
+                            hit.normal, hit.collider.transform, !isOrganic,
+                            !isOrganic);
+
+                        // Call the damage behaviour of target if exists.
+                        if (hit.collider)
+                        {
+                            hit.collider.SendMessageUpwards("HitCallback",
+                                new HealthBase.DamageInfo(
+                                    hit.point, ray.direction, weapons[weapon].bulletDamage, hit.collider),
+                                SendMessageOptions.DontRequireReceiver);
+                        }
+                    }
+                }
+                // No target was hit.
+                else
+                {
+                    Vector3 destination = (ray.direction * 500f) - ray.origin;
+                    // Handle shot effects without a specific target.
+                    DrawShoot(weapons[weapon].gameObject, destination, Vector3.up, null, false, false);
+                }
+
+                // Play shot sound.
+                SoundManager.Instance.PlayOneShotEffect((int) weapons[weapon].shotSound, gunMuzzle.position, 5f);
+                // Trigger alert callback - AlertChecker 가 필요하다.
+                GameObject gameController = GameObject.FindGameObjectWithTag(TagAndLayer.TagName.GameController);
+                gameController.SendMessage("RootAlertNearby", ray.origin,
+                    SendMessageOptions.DontRequireReceiver);
+                // Reset shot lifetime.
+                shotDecay = originalShotDecay;
+                isShotAlive = true;
+            }
+        }
+
+        // Handle reload weapon end (called by animation).
+        public void EndReloadWeapon()
+        {
+            BehaviourController.GetAnim.SetBool(reloadBool, false);
+            weapons[activeWeapon].EndReload();
+        }
+
+        // Change HUD crosshair when aiming.
+        private void SetWeaponCrosshair(bool armed)
+        {
+            if (armed)
             {
-                weapons[newWeapon].gameObject.SetActive(true);
-                gunMuzzle = weapons[newWeapon].transform.Find("muzzle");
-                weapons[newWeapon].Toggle(true);
+                aimBehaviour.crosshair = aimCrosshair;
             }
-
-            activeWeapon = newWeapon;
-
-            // Call change weapon animation if new weapon type is different.
-            if (oldWeapon != newWeapon)
+            else
             {
-                BehaviourController.GetAnim.SetTrigger(changeWeaponTrigger);
-                BehaviourController.GetAnim.SetInteger(weaponTypeInt, weapons[newWeapon] ? (int)weapons[newWeapon].type : 0);
+                aimBehaviour.crosshair = originalCrosshair;
             }
-
-            // Set crosshair if armed.
-            SetWeaponCrosshair(newWeapon > 0);
         }
 
         // Handle the shot parameters during its lifetime.
@@ -374,6 +329,103 @@ namespace FC
             }
         }
 
+        // Change the active weapon.
+        private void ChangeWeapon(int oldWeapon, int newWeapon)
+        {
+            // Previously armed? Disable weapon.
+            if (oldWeapon > 0)
+            {
+                weapons[oldWeapon].gameObject.SetActive(false);
+                gunMuzzle = null;
+                weapons[oldWeapon].Toggle(false);
+            }
+
+            // Cycle trought empty slots to find next existing weapon or the no weapon slot.
+            while (weapons[newWeapon] == null && newWeapon > 0)
+            {
+                newWeapon = (newWeapon + 1) % weapons.Count;
+            }
+
+            // Next weapon exists? Activate it.
+            if (newWeapon > 0)
+            {
+                weapons[newWeapon].gameObject.SetActive(true);
+                gunMuzzle = weapons[newWeapon].transform.Find("muzzle");
+                weapons[newWeapon].Toggle(true);
+            }
+
+            activeWeapon = newWeapon;
+
+            // Call change weapon animation if new weapon type is different.
+            if (oldWeapon != newWeapon)
+            {
+                BehaviourController.GetAnim.SetTrigger(changeWeaponTrigger);
+                BehaviourController.GetAnim.SetInteger(weaponTypeInt,
+                    weapons[newWeapon] ? (int) weapons[newWeapon].type : 0);
+            }
+
+            // Set crosshair if armed.
+            SetWeaponCrosshair(newWeapon > 0);
+        }
+
+        // Update is used to set features regardless the active behaviour.
+        private void Update()
+        {
+            // Handle shoot weapon action.
+            if (Math.Abs(Input.GetAxisRaw(ButtonName.Shoot)) > Mathf.Epsilon && !isShooting && activeWeapon > 0 && burstShotCount == 0)
+            {
+                isShooting = true;
+                ShootWeapon(activeWeapon);
+            }
+            else if (isShooting && Math.Abs(Input.GetAxisRaw(ButtonName.Shoot)) < Mathf.Epsilon)
+            {
+                isShooting = false;
+            }
+            // Handle reload weapon action.
+            else if (Input.GetButtonUp(ButtonName.Reload) && activeWeapon > 0)
+            {
+                if (weapons[activeWeapon].StartReload())
+                {
+                    //AudioSource.PlayClipAtPoint(weapons[activeWeapon].reloadSound, gunMuzzle.position, 0.5f);
+                    SoundManager.Instance.PlayOneShotEffect((int) weapons[activeWeapon].reloadSound, gunMuzzle.position,
+                        0.5f);
+                    BehaviourController.GetAnim.SetBool(reloadBool, true);
+                }
+            }
+            // Handle drop weapon action.
+            else if (Input.GetButtonDown(ButtonName.Drop) && activeWeapon > 0)
+            {
+                // End reload paramters, drop weapon and change to another one in inventory.
+                EndReloadWeapon();
+                int weaponToDrop = activeWeapon;
+                ChangeWeapon(activeWeapon, 0);
+                weapons[weaponToDrop].Drop();
+                weapons[weaponToDrop] = null;
+            }
+            // Handle change weapon action.
+            else
+            {
+                if ((Math.Abs(Input.GetAxisRaw(ButtonName.Change)) > Mathf.Epsilon && !isChangingWeapon))
+                {
+                    isChangingWeapon = true;
+                    int nextWeapon = activeWeapon + 1;
+                    ChangeWeapon(activeWeapon, (nextWeapon) % weapons.Count);
+                }
+                else if (Math.Abs(Input.GetAxisRaw(ButtonName.Change)) < Mathf.Epsilon)
+                {
+                    isChangingWeapon = false;
+                }
+            }
+
+            // Manage shot parameters after shooting action.
+            if (isShotAlive)
+            {
+                ShotDecay();
+            }
+
+            isAiming = BehaviourController.GetAnim.GetBool(aimBool);
+        }
+
         // Add a new weapon to inventory (called by weapon object).
         public void AddWeapon(InteractiveWeapon newWeapon)
         {
@@ -405,27 +457,6 @@ namespace FC
             ChangeWeapon(activeWeapon, slotMap[newWeapon.type]);
         }
 
-        // Handle reload weapon end (called by animation).
-        public void EndReloadWeapon()
-        {
-            BehaviourController.GetAnim.SetBool(reloadBool, false);
-            weapons[activeWeapon].EndReload();
-        }
-
-        // Change HUD crosshair when aiming.
-        private void SetWeaponCrosshair(bool armed)
-        {
-            if (armed)
-            {
-                aimBehaviour.crosshair = aimCrosshair;
-            }                
-            else
-            {
-                aimBehaviour.crosshair = originalCrosshair;
-            }
-                
-        }
-
         // Check if aim is blocked by obstacles.
         private bool CheckforBlockedAim()
         {
@@ -448,7 +479,7 @@ namespace FC
                 {
                     return;
                 }
-                    
+
 
                 // Orientate upper body where camera  is targeting.
                 Quaternion targetRot = Quaternion.Euler(0, transform.eulerAngles.y, 0);
@@ -480,16 +511,8 @@ namespace FC
         // Manage post animation step corrections.
         private void LateUpdate()
         {
-            // Correct right hand position when covering.
-            if ((!isAiming || isAimBlocked)
-                && BehaviourController.GetAnim.GetBool(coveringBool)
-                && BehaviourController.GetAnim.GetFloat(Animator.StringToHash(AnimatorKey.Crouch)) > 0.5f)
-            {
-                rightHand.Rotate(RightHandCover);
-            }
-
             // Correct left arm position when aiming with a short gun.
-            else if (isAiming && weapons[activeWeapon] && weapons[activeWeapon].type == InteractiveWeapon.WeaponType.SHORT)
+            if (isAiming && weapons[activeWeapon] && weapons[activeWeapon].type == InteractiveWeapon.WeaponType.SHORT)
             {
                 //leftArm.Rotate(new Vector3(leftleft, leftDown, leftBack));
                 leftArm.localEulerAngles = leftArm.localEulerAngles + LeftArmShortAim;
@@ -497,4 +520,3 @@ namespace FC
         }
     }
 }
-

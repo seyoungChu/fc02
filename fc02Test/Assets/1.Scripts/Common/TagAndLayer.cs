@@ -21,6 +21,22 @@ namespace FC
             public const string Bound = "Bound";
             public const string Environment = "Environment";
         }
+        
+        public class LayerMasking
+        {
+            public const int DefaultLayer = 1 << 0;
+            public const int TransparentFXLayer = 1 << 1;
+            public const int IgnoreRaycastLayer = 1 << 2;
+            public const int WaterLayer = 1 << 4;
+            public const int UILayer = 1 << 5;
+            public const int CoverLayer = 1 << 8;
+            public const int IgnoreShotLayer = 1 << 9;
+            public const int CoverInvisible = 1 << 10;
+            public const int Player = 1 << 11;
+            public const int Enemy = 1 << 12;
+            public const int Bound = 1 << 13;    
+        }
+        
 
         public enum LayerIndex
         {

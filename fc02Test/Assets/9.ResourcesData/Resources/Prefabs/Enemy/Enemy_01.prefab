@@ -1607,7 +1607,6 @@ GameObject:
   - component: {fileID: 1938836698292321}
   - component: {fileID: 1938836698292322}
   - component: {fileID: 37478136}
-  - component: {fileID: 1795559493}
   - component: {fileID: 632921321761582086}
   m_Layer: 12
   m_Name: Enemy_01
@@ -1781,20 +1780,6 @@ MonoBehaviour:
     type: 3}
   headshot: 1
 --- !u!136 &37478136
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2021495249494609561}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1.78
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.84, z: 0}
---- !u!136 &1795559493
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

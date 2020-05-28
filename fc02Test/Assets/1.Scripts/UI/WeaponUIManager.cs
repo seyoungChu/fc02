@@ -11,18 +11,27 @@ namespace FC
         public Color emptyBulletColor = Color.black;        // Color of the empty  bullets inside weapon HUD.
     
         private Color nobulletColor;                        // Transparent color to hide extra capacity bullet slots.
-        private Image weaponHud;                            // The weapon draw inside HUD.
-        private GameObject bulletMag;                       // The bullets draw inside HUD.
-        private Text totalBulletsHud;                       // The bullets amount label inside HUD.
+        [SerializeField] private Image weaponHud;                            // The weapon draw inside HUD.
+        [SerializeField] private GameObject bulletMag;                       // The bullets draw inside HUD.
+        [SerializeField] private Text totalBulletsHud;                       // The bullets amount label inside HUD.
     
         void Start ()
         {
             // Set up references and default values.
-            weaponHud = this.transform.Find("WeaponHUD/Weapon").GetComponent<Image>();
-            bulletMag = this.transform.Find("WeaponHUD/Data/Mag").gameObject;
             nobulletColor = new Color(0, 0, 0, 0);
-            totalBulletsHud = this.transform.Find("WeaponHUD/Data/Label").GetComponent<Text>();
-    
+            if (weaponHud == null)
+            {
+                weaponHud = this.transform.Find("WeaponHUD/Weapon").GetComponent<Image>();    
+            }
+            if (bulletMag == null)
+            {
+                bulletMag = this.transform.Find("WeaponHUD/Data/Mag").gameObject;    
+            }
+            if (totalBulletsHud == null)
+            {
+                totalBulletsHud = this.transform.Find("WeaponHUD/Data/Label").GetComponent<Text>();    
+            }
+
             // Player begins unarmed, hide weapon HUD.
             Toggle(false);
         }

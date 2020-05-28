@@ -6,7 +6,8 @@ using FC;
 namespace FC
 {
     /// <summary>
-    /// 총 겨누기.
+    /// 마우스 오른쪽 버튼으로 조준. 다른 동작을 대체해서 동작하게 됩니다.
+    /// 마우스 휠버튼으로 좌우 견착 변경.
     /// </summary>
     public class AimBehaviour : GenericBehaviour
     {
@@ -15,20 +16,19 @@ namespace FC
         public Vector3 aimPivotOffset = new Vector3(0.5f, 1.2f, 0f); //조준 할 때 카메라 포인트 오프셋Offset to repoint the camera when aiming.
         public Vector3 aimCamOffset = new Vector3(0f, 0.4f, -0.7f); //조준할때 카메라 위치 오프셋 Offset to relocate the camera when aiming.
 
-        private int aimBool; // Animator variable related to aiming.
-        private bool aim; // Boolean to determine whether or not the player is aiming.
-        private int cornerBool; // Animator variable related to cover corner..
-        private bool peekCorner; // Boolean to get whether or not the player is on a cover corner.
-        private Vector3 initialRootRotation; // Initial root bone local rotation.
-        private Vector3 initialHipsRotation; // Initial hips rotation related to the root bone.
-        private Vector3 initialSpineRotation; // Initial spine rotation related to the root bone.
+        private int aimBool; // 애니메이터 밸류, 조준관련.Animator variable related to aiming.
+        private bool aim; // 조준중인지 판단. Boolean to determine whether or not the player is aiming.
+        private int cornerBool; // 애니메이터 관련, 코너. Animator variable related to cover corner..
+        private bool peekCorner; // 플레이어가 코너 모서리에있는지 여부. Boolean to get whether or not the player is on a cover corner.
+        private Vector3 initialRootRotation; // 루트 뼈 로컬 회전값.Initial root bone local rotation.
+        private Vector3 initialHipsRotation; // 루트 뼈로부터의 상대 회전값. Initial hips rotation related to the root bone.
+        private Vector3 initialSpineRotation; // 루트 뼈로부터의 상대 회전값.Initial spine rotation related to the root bone.
 
         // Start is always called after any Awake functions.
         void Start()
         {
             // Set up the references.
             aimBool = Animator.StringToHash(AnimatorKey.Aim);
-
             cornerBool = Animator.StringToHash(AnimatorKey.Corner);
 
             // Get initial bone rotation values.
@@ -39,7 +39,7 @@ namespace FC
         }
         
 
-        // Rotate the player to match correct orientation, according to camera.
+        // 카메라에 따라 플레이어를 올바른 방향으로 회전.Rotate the player to match correct orientation, according to camera.
         void Rotating()
         {
             Vector3 forward = BehaviourController.playerCamera.TransformDirection(Vector3.forward);

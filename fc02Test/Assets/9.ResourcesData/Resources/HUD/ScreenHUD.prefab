@@ -2192,6 +2192,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletColor: {r: 0.7607843, g: 0.7607843, b: 0.7607843, a: 1}
   emptyBulletColor: {r: 0, g: 0, b: 0, a: 1}
+  weaponHud: {fileID: 6573410908021253636}
+  bulletMag: {fileID: 6532675748085798498}
+  totalBulletsHud: {fileID: 6572113226540704584}
 --- !u!1 &6533176069211567564
 GameObject:
   m_ObjectHideFlags: 0

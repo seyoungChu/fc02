@@ -10,8 +10,6 @@ namespace FC
         public float health = 100f;
         public float criticalHealth = 30f;
         public Transform healthHUD;
-        //public AudioClip deathClip;
-        //public AudioClip[] hitClips;
         public SoundList deathSound;
         public SoundList hitSound;
         public GameObject hurtPrefab;
@@ -73,7 +71,6 @@ namespace FC
                 criticalHud.StartBlink();
             }
 
-            //AudioSource.PlayClipAtPoint(hitClips[Random.Range(0, hitClips.Length)], location, 0.1f);
             SoundManager.Instance.PlayOneShotEffect((int)hitSound, location, 0.1f);
             
         }
@@ -105,8 +102,7 @@ namespace FC
             {
                 spawnEffect.enabled = true;
             }
-            
-            //AudioSource.PlayClipAtPoint(deathClip, transform.position, 5);
+
             SoundManager.Instance.PlayOneShotEffect((int)deathSound, transform.position, 5f);
         }
     }

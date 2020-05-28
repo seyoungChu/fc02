@@ -11,8 +11,9 @@ namespace FC
         [Range(0, 50)] public float alertRadius;
         [Tooltip("Time to live. How many extra tiers the alert is forwarded.")]
         public int extraWaves;
+
         [Tooltip("The layer mask of objects to alert.")]
-        public LayerMask alertMask = 1 << (int)TagAndLayer.LayerIndex.Enemy;// 12;
+        public LayerMask alertMask = TagAndLayer.LayerMasking.Enemy;//1 << (int)TagAndLayer.LayerIndex.Enemy;// 12;
     
         private Vector3 current;       // The current alert position.
         private bool alert;            // Is there a new alert to propagate?
@@ -32,8 +33,7 @@ namespace FC
             {
                 return;
             }
-                
-    
+
             // Grab nearby objects to trigger alert.
             Collider[] targetsInViewRadius = Physics.OverlapSphere(origin, alertRadius, alertMask);
     
