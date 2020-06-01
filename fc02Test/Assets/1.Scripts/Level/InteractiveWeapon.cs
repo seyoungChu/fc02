@@ -47,7 +47,7 @@ namespace FC
         public WeaponMode mode = WeaponMode.SEMI; // Default weapon mode, change in Inspector.
         public int burstSize = 3; //버스트샷 숫자? How many shot are fired on burst mode.
 
-        //현재 탄창 양과 전체 총알 량.
+        //현재 탄창 양과 소지하고 있는 전체 총알 량.
         [SerializeField]
         private int currentMagCapacity, totalBullets; // Current mag capacity and total amount of bullets being carried.
         //재장전시의 꽉찬 탄창양과 한번에 채울수 있는 최대 총알 량

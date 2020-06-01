@@ -18,7 +18,7 @@ namespace FC
         //[Tooltip("NPC class specific stats.")] public ClassStats classStats;
         public StatData statData;
         public string classID;
-
+        
         public StatData.Param classStats
         {
             get

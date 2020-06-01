@@ -20,9 +20,7 @@ namespace FC
 
         void Awake()
         {
-
             anim = this.GetComponent<Animator>();
-
         }
 
         void Update()

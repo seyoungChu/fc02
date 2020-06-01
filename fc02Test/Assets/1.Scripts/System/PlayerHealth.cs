@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,26 +17,28 @@ namespace FC
         public float decayFactor = 0.8f;
 
         private float totalHealth;
-        private BlinkHUD criticalHud;
         private RectTransform healthBar, placeHolderBar;
         private Text healthLabel;
         private float originalBarScale;
         private bool critical;
-        private HurtHUD hurtHUD;
+        
+        //private BlinkHUD criticalHud; -> 2부에서.
+        //private HurtHUD hurtHUD; -> 2부에서.
 
         void Awake()
         {
             myAnimator = GetComponent<Animator>();
             totalHealth = health;
-            criticalHud = healthHUD.Find("Bloodframe").GetComponent<BlinkHUD>();
+            
             healthBar = healthHUD.Find("HealthBar/Bar").GetComponent<RectTransform>();
             placeHolderBar = healthHUD.Find("HealthBar/Placeholder").GetComponent<RectTransform>();
             healthLabel = healthHUD.Find("HealthBar/Label").GetComponent<Text>();
             originalBarScale = healthBar.sizeDelta.x;
             healthLabel.text = "" + (int)health;
-
-            hurtHUD = this.gameObject.AddComponent<HurtHUD>();
-            hurtHUD.Setup(healthHUD, hurtPrefab, decayFactor, this.transform);
+            
+            //criticalHud = healthHUD.Find("Bloodframe").GetComponent<BlinkHUD>(); -> 2부에서.
+            //hurtHUD = this.gameObject.AddComponent<HurtHUD>(); -> 2부에서.
+            //hurtHUD.Setup(healthHUD, hurtPrefab, decayFactor, this.transform); -> 2부에서.
         }
 
         void Update()
@@ -48,7 +51,7 @@ namespace FC
 
         public bool IsFullLife()
         {
-            return health == totalHealth;
+            return Math.Abs(health - totalHealth) < float.Epsilon;
         }
 
         public override void TakeDamage(Vector3 location, Vector3 direction, float damage, Collider bodyPart = null,
@@ -58,8 +61,11 @@ namespace FC
 
             UpdateHealthBar();
 
-            if (hurtPrefab && healthHUD)
-                hurtHUD.DrawHurtUI(origin.transform, origin.GetHashCode());
+            // if (hurtPrefab && healthHUD) -> 2부에서.
+            // {
+            //     hurtHUD.DrawHurtUI(origin.transform, origin.GetHashCode()); -> 2부에서.
+            // }
+                
 
             if (health <= 0)
             {
@@ -68,7 +74,7 @@ namespace FC
             else if (health <= criticalHealth && !critical)
             {
                 critical = true;
-                criticalHud.StartBlink();
+                //criticalHud.StartBlink(); -> 2부에서.
             }
 
             SoundManager.Instance.PlayOneShotEffect((int)hitSound, location, 0.1f);
