@@ -13,7 +13,7 @@ namespace FC
             try
             {
                 // Check dead condition on target health manager.
-                return controller.aimTarget.root.GetComponent<HealthBase>().dead;
+                return controller.aimTarget.root.GetComponent<HealthBase>().isDead;
             }
             catch (UnassignedReferenceException)
             {

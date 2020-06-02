@@ -34,6 +34,24 @@ namespace FC
             aimBool = Animator.StringToHash(AnimatorKey.Aim);
             crouchFloat = Animator.StringToHash(AnimatorKey.Crouch);
         }
+        
+        private void PlayFootStep()
+        {
+            //기존 위치랑 동일하지 않다면, 즉 아직 움직이는 중이라면.
+            if (oldDist < maxDist)
+            {
+                return;
+            }
+
+            oldDist = maxDist = 0;
+            int oldIndex = index;
+            while (oldIndex == index)
+            {
+                index = (int)Random.Range(0, stepSounds.Length - 1);
+            }
+
+            SoundManager.Instance.PlayOneShotEffect((int)stepSounds[index],transform.position,0.2f);
+        }
 
         private void Update()
         {
@@ -45,13 +63,13 @@ namespace FC
             grounded = myAnimator.GetBool(groundedBool);
 
             float factor = 0.15f;
-            if (myAnimator.GetBool(coverBool) || myAnimator.GetBool(aimBool))
-            {
-                if (myAnimator.GetFloat(crouchFloat) < 0.5f && !myAnimator.GetBool(aimBool))
-                    factor = 0.17f;
-                else
-                    factor = 0.11f;
-            }
+            // if (myAnimator.GetBool(coverBool) || myAnimator.GetBool(aimBool))
+            // {
+            //     if (myAnimator.GetFloat(crouchFloat) < 0.5f && !myAnimator.GetBool(aimBool))
+            //         factor = 0.17f;
+            //     else
+            //         factor = 0.11f;
+            // }
 
             if (grounded && myAnimator.velocity.magnitude > 1.6f)
             {
@@ -80,25 +98,6 @@ namespace FC
                         break;
                 }
             }
-        }
-
-        private void PlayFootStep()
-        {
-            // still stepping away
-            if (oldDist < maxDist)
-            {
-                return;
-            }
-
-            oldDist = maxDist = 0;
-            int oldIndex = index;
-            while (oldIndex == index)
-            {
-                index = (int)Random.Range(0, stepSounds.Length - 1);
-            }
-
-            //AudioSource.PlayClipAtPoint(stepSounds[index], transform.position, 0.2f);
-            SoundManager.Instance.PlayOneShotEffect((int)stepSounds[index],transform.position,0.2f);
         }
     }
 }

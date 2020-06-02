@@ -7,6 +7,16 @@ using Random = UnityEngine.Random;
 
 namespace FC
 {
+    /// <summary>
+    /// 사격 기능 : 사격이 가능한지 막혀 있는지 여부를 체크,
+    /// 발사 키 입력 받아서 애니메이션과 이펙트도 생성, 충돌 체크 기능도 갖고 있다.
+    /// UI 관련해서 십자선 텍스처를 변경해주고
+    /// 발사 속도 조정
+    /// 캐릭터 상체를 IK를 이용, 조준 시점에 맞춰 회전 조절.
+    /// 벽이나 충돌체에 부딪쳤을경우 피탄 이펙트를 생성(무한은 아님)
+    /// 인벤토리 역활, 무기를 소지하고 있는 지 확인.
+    /// 재장전과 무기 교체 기능도 포함.
+    /// </summary>
     public class ShootBehaviour : GenericBehaviour
     {
         public Texture2D aimCrosshair, shootCrosshair; //십자선 텍스쳐. Crosshair textures for aiming and shooting.
@@ -66,7 +76,7 @@ namespace FC
         private Vector3 initialChestRotation; // Initial chest rotation related to the spine bone.
 
         private float
-            shotDecay, originalShotDecay = 0.5f; //기본 총알 수명 Default shot lifetime. Use shotRateFactor to modify speed.
+            shotInterval, originalShotInterval = 0.5f; //기본 총알 수명 Default shot lifetime. Use shotRateFactor to modify speed.
 
         private List<GameObject> bulletHoles; //피탄 구멍 Bullet holes scene buffer.
         private int bulletHoleSlot = 0; //씬에서의 피탄 구멍 숫자. Number of active bullet holes on scene.
@@ -126,7 +136,7 @@ namespace FC
             initialSpineRotation = spine.localEulerAngles;
             initialChestRotation = chest.localEulerAngles;
             originalCrosshair = aimBehaviour.crosshair;
-            shotDecay = originalShotDecay;
+            shotInterval = originalShotInterval;
             castRelativeOrigin = neck.position - this.transform.position;
             distToHand = (rightHand.position - neck.position).magnitude * 1.5f;
         }
@@ -253,7 +263,7 @@ namespace FC
                 gameController.SendMessage("RootAlertNearby", ray.origin,
                     SendMessageOptions.DontRequireReceiver);
                 // Reset shot lifetime.
-                shotDecay = originalShotDecay;
+                shotInterval = originalShotInterval;
                 isShotAlive = true;
             }
         }
@@ -279,13 +289,13 @@ namespace FC
         }
 
         // Handle the shot parameters during its lifetime.
-        private void ShotDecay()
+        private void ShotProgress()
         {
             // Update parameters on imminent shot death.
-            if (shotDecay > 0.2f)
+            if (shotInterval > 0.2f)
             {
-                shotDecay -= shotRateFactor * Time.deltaTime;
-                if (shotDecay <= 0.4f)
+                shotInterval -= shotRateFactor * Time.deltaTime;
+                if (shotInterval <= 0.4f)
                 {
                     // Return crosshair to normal aim mode and hide shot flash.
                     SetWeaponCrosshair(activeWeapon > 0);
@@ -297,7 +307,7 @@ namespace FC
                         BehaviourController.GetCamScript.BounceVertical(-weapons[activeWeapon].recoilAngle * 0.1f);
 
                         // Handle next shot for burst or auto mode.
-                        if (shotDecay <= (0.4f - 2 * Time.deltaTime))
+                        if (shotInterval <= (0.4f - 2 * Time.deltaTime))
                         {
                             // Auto mode, keep firing while shoot button is pressed.
                             if (weapons[activeWeapon].mode == InteractiveWeapon.WeaponMode.AUTO &&
@@ -372,12 +382,13 @@ namespace FC
         private void Update()
         {
             // Handle shoot weapon action.
-            if (Math.Abs(Input.GetAxisRaw(ButtonName.Shoot)) > Mathf.Epsilon && !isShooting && activeWeapon > 0 && burstShotCount == 0)
+            float shootTrigger = Math.Abs(Input.GetAxisRaw(ButtonName.Shoot));
+            if (shootTrigger > Mathf.Epsilon && !isShooting && activeWeapon > 0 && burstShotCount == 0)
             {
                 isShooting = true;
                 ShootWeapon(activeWeapon);
             }
-            else if (isShooting && Math.Abs(Input.GetAxisRaw(ButtonName.Shoot)) < Mathf.Epsilon)
+            else if (isShooting && shootTrigger < Mathf.Epsilon)
             {
                 isShooting = false;
             }
@@ -420,7 +431,7 @@ namespace FC
             // Manage shot parameters after shooting action.
             if (isShotAlive)
             {
-                ShotDecay();
+                ShotProgress();
             }
 
             isAiming = BehaviourController.GetAnim.GetBool(aimBool);

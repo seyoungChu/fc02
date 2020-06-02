@@ -223,7 +223,7 @@ namespace FC
         // This is the message receiver for alert events triggered by nearby objects (ex.: other NPC alert about a noise).
         public void AlertCallback(Vector3 target)
         {
-            if (!aimTarget.root.GetComponent<HealthBase>().dead)
+            if (!aimTarget.root.GetComponent<HealthBase>().isDead)
             {
                 this.variables.hearAlert = true;
                 this.personalTarget = target;

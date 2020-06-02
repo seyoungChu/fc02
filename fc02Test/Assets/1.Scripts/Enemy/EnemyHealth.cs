@@ -58,7 +58,7 @@ namespace FC
 		public override void TakeDamage(Vector3 location, Vector3 direction, float damage, Collider bodyPart, GameObject origin = null)
 		{
 			// Headshot multiplier. On default values, instantly kills NPC.
-			if (!dead && headshot && bodyPart.transform == anim.GetBoneTransform(HumanBodyBones.Head))
+			if (!isDead && headshot && bodyPart.transform == anim.GetBoneTransform(HumanBodyBones.Head))
 			{
 				// Default damage multiplier is 10x.
 				damage *= 10;
@@ -72,7 +72,7 @@ namespace FC
 			health -= damage;
 
 			// Is the NPC alive?
-			if (!dead)
+			if (!isDead)
 			{
 				// Trigger hit animation.
 				if(!anim.IsInTransition(3) && anim.GetCurrentAnimatorStateInfo(3).IsName("No hit"))
@@ -88,7 +88,7 @@ namespace FC
 			if (health <= 0)
 			{
 				// Kill the NPC?
-				if (!dead)
+				if (!isDead)
 					Kill();
 
 				// Shooting a dead body? Just apply shot force on the ragdoll part.
@@ -110,7 +110,7 @@ namespace FC
 			anim.enabled = false;
 			Destroy(weapon.gameObject);
 			Destroy(hud.gameObject);
-			dead = true;
+			isDead = true;
 		}
 
 		// Update health bar HUD to current NPC health.

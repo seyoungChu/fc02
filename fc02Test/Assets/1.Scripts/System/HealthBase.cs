@@ -24,7 +24,7 @@ namespace FC
             }
         }
 
-        [HideInInspector] public bool dead;          // Is this entity dead?
+        [HideInInspector] public bool isDead;          // Is this entity dead?
         protected Animator myAnimator;
         // This is the mandatory function that receives damage from shots.
         // You may remove the 'virtual' keyword before coding the content.

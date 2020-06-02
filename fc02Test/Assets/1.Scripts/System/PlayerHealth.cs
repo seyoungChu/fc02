@@ -6,6 +6,11 @@ using UnityEngine.UI;
 using FC;
 namespace FC
 {
+    /// <summary>
+    /// 플레이어의 생명력을 담당.
+    /// 피격시 피격 이펙트를 표시하거나 UI를 업데이트한다.
+    /// 죽었을경우 모든 동작 스크립트를 정지시킨다.
+    /// </summary>
     public class PlayerHealth : HealthBase
     {
         public float health = 100f;
@@ -53,6 +58,36 @@ namespace FC
         {
             return Math.Abs(health - totalHealth) < float.Epsilon;
         }
+        private void UpdateHealthBar()
+        {
+            healthLabel.text = "" + (int)health;
+
+            float scaleFactor = health / totalHealth;
+            healthBar.sizeDelta = new Vector2(scaleFactor * originalBarScale, healthBar.sizeDelta.y);
+        }
+
+        private void Kill()
+        {
+            isDead = true;
+            gameObject.layer = TagAndLayer.GetLayerByName(TagAndLayer.LayerName.Default);
+            gameObject.tag = TagAndLayer.TagName.Untagged;
+            healthHUD.gameObject.SetActive(false);
+            healthHUD.parent.Find("WeaponHUD").gameObject.SetActive(false);
+            myAnimator.SetBool(AnimatorKey.Aim, false);
+            myAnimator.SetBool(AnimatorKey.Cover, false);
+            myAnimator.SetFloat(AnimatorKey.Speed, 0);
+            foreach (GenericBehaviour behaviour in GetComponentsInChildren<GenericBehaviour>())
+            {
+                behaviour.enabled = false;
+            }
+            // SpawnEffect spawnEffect = this.GetComponentInChildren<SpawnEffect>();
+            // if (spawnEffect != null)
+            // {
+            //     spawnEffect.enabled = true;
+            // }
+
+            SoundManager.Instance.PlayOneShotEffect((int)deathSound, transform.position, 5f);
+        }
 
         public override void TakeDamage(Vector3 location, Vector3 direction, float damage, Collider bodyPart = null,
             GameObject origin = null)
@@ -81,36 +116,7 @@ namespace FC
             
         }
 
-        private void UpdateHealthBar()
-        {
-            healthLabel.text = "" + (int)health;
-
-            float scaleFactor = health / totalHealth;
-            healthBar.sizeDelta = new Vector2(scaleFactor * originalBarScale, healthBar.sizeDelta.y);
-        }
-
-        private void Kill()
-        {
-            dead = true;
-            gameObject.layer = TagAndLayer.GetLayerByName(TagAndLayer.LayerName.Default);
-            gameObject.tag = TagAndLayer.TagName.Untagged;
-            healthHUD.gameObject.SetActive(false);
-            healthHUD.parent.Find("WeaponHUD").gameObject.SetActive(false);
-            myAnimator.SetBool(AnimatorKey.Aim, false);
-            myAnimator.SetBool(AnimatorKey.Cover, false);
-            myAnimator.SetFloat(AnimatorKey.Speed, 0);
-            foreach (GenericBehaviour behaviour in GetComponentsInChildren<GenericBehaviour>())
-            {
-                behaviour.enabled = false;
-            }
-            SpawnEffect spawnEffect = this.GetComponentInChildren<SpawnEffect>();
-            if (spawnEffect != null)
-            {
-                spawnEffect.enabled = true;
-            }
-
-            SoundManager.Instance.PlayOneShotEffect((int)deathSound, transform.position, 5f);
-        }
+        
     }
 }
 
