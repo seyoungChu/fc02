@@ -6,12 +6,7 @@ using FC;
 
 namespace FC
 {
-    public enum WeaponType
-    {
-        NONE,
-        SHORT,
-        LONG
-    }
+
     public class StateController : MonoBehaviour
     {
         [Tooltip("NPC common stats.")] public GeneralStats generalStats;
@@ -68,7 +63,7 @@ namespace FC
         [HideInInspector] public int maximumBurst = 7; // The maximum burst size on a round.
 
         [HideInInspector]
-        public float blindEngageTime = 30f; // Time to keep targeting last seen position after target leaves sight.
+        public float blindEngageTime = 30f; // 대상이 시야를 떠난 후 대상을 인지하고 있을 유지 시간.Time to keep targeting last seen position after target leaves sight.
 
         [HideInInspector] public bool targetInSight; // Is target on sight?
         [HideInInspector] public bool focusSight; // Will focus on sight position?
@@ -92,12 +87,6 @@ namespace FC
         [HideInInspector] public EnemyAnimation enemyAnimation; // Reference to the enemy animation script.
         [HideInInspector] public CoverLookup coverLookup; // Reference to the Game Controller's cover lookup script.
 
-        // Reset cover position.
-        private void OnDestroy()
-        {
-            coverSpot.Remove(this.GetHashCode());
-        }
-
         // Get and Set current cover spot.
         public Vector3 CoverSpot
         {
@@ -105,6 +94,21 @@ namespace FC
             set { coverSpot[this.GetHashCode()] = value; }
         }
 
+
+        // Change the current FSM state (called externally).
+        public void TransitionToState(State nextState, Decision decision)
+        {
+            if (nextState != remainState)
+            {
+                // DEBUG: show state transitions for NPC.
+                //Debug.Log(transform.name + " :" + decision.name + " : " + currentState.name + "->" + nextState.name);
+                currentState = nextState;
+            }
+        }
+        /// 1 /////
+        
+        
+        
         // Get and Set for strafing and aiming states.
         public bool Strafing
         {
@@ -129,7 +133,7 @@ namespace FC
             }
         }
 
-        // Liberate aim for a short period of time, alowing NPC body realignment.
+        //짧은 시간동안 조준을 해제하고 바디를 재정렬. Liberate aim for a short period of time, alowing NPC body realignment.
         public IEnumerator UnstuckAim(float delay)
         {
             yield return new WaitForSeconds(delay * 0.5f);
@@ -137,6 +141,8 @@ namespace FC
             yield return new WaitForSeconds(delay * 0.5f);
             Aiming = true;
         }
+        
+        /// 2  //////////
 
         void Awake()
         {
@@ -153,14 +159,6 @@ namespace FC
             nearRadius = perceptionRadius / 2;
             // Get/create Game Controller.
             GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-            if (gameController == null)
-            {
-                gameController = new GameObject("GameController")
-                {
-                    tag = "GameController"
-                };
-            }
-
             // Attach cover lookup component to Game Controller and/or get reference.
             coverLookup = gameController.GetComponent<CoverLookup>();
             if (coverLookup == null)
@@ -192,16 +190,7 @@ namespace FC
             currentState.CheckTransitions(this);
         }
 
-        // Change the current FSM state (called externally).
-        public void TransitionToState(State nextState, Decision decision)
-        {
-            if (nextState != remainState)
-            {
-                // DEBUG: show state transitions for NPC.
-                //Debug.Log(transform.name + " :" + decision.name + " : " + currentState.name + "->" + nextState.name);
-                currentState = nextState;
-            }
-        }
+
 
         // DEBUG: Draw orb above NPC to indicate the current FSM state category (editor only).
         private void OnDrawGizmos()
@@ -271,6 +260,12 @@ namespace FC
             }
 
             return blockedSight;
+        }
+        
+        // Reset cover position.
+        private void OnDestroy()
+        {
+            coverSpot.Remove(this.GetHashCode());
         }
     }
 }

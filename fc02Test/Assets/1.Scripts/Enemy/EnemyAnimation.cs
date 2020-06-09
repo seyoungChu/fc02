@@ -65,6 +65,80 @@ namespace FC
                 member.isKinematic = true;
             }
         }
+        
+        // Set speed and orientation angle on the NPC animator, using damping values.
+        void Setup(float speed, float angle, Vector3 strafeDirection)
+        {
+            angle *= Mathf.Deg2Rad;
+            angularSpeed = angle / controller.generalStats.angleResponseTime;
+
+            anim.SetFloat(AnimatorKey.Speed, speed, controller.generalStats.speedDampTime, Time.deltaTime);
+            anim.SetFloat(AnimatorKey.AngularSpeed, angularSpeed, controller.generalStats.angularSpeedDampTime,
+                Time.deltaTime);
+
+            // Set 2D direction for strafing.
+            anim.SetFloat(AnimatorKey.Horizontal, strafeDirection.x, controller.generalStats.speedDampTime,
+                Time.deltaTime);
+            anim.SetFloat(AnimatorKey.Vertical, strafeDirection.z, controller.generalStats.speedDampTime,
+                Time.deltaTime);
+        }
+        
+        // Set NPC orientation and speed on the animator contoller.
+        void NavAnimSetup()
+        {
+            float speed;
+            float angle;
+            // Grab speed per frame, based nav desired velocity and current forward
+            speed = Vector3.Project(nav.desiredVelocity, transform.forward).magnitude;
+            // Target is on sight, focus orientation on him.
+            if (controller.focusSight)
+            {
+                Vector3 dest = (controller.personalTarget - transform.position);
+                dest.y = 0;
+                //angle < 0 왼쪽, angle > 0 오른쪽.
+                angle = Vector3.SignedAngle(transform.forward, dest, transform.up);
+                
+                //Calculate facing direction when strafing.
+                if (controller.Strafing)
+                {
+                    dest = dest.normalized;
+                    Quaternion targetStrafeRotation = Quaternion.LookRotation(dest);
+                    transform.rotation =
+                        Quaternion.Lerp(transform.rotation, targetStrafeRotation, turnSpeed * Time.time);
+                }
+            }
+            // Target is not on sight, use navmesh agent values as reference (ex.: waypoint navigation).
+            else
+            {
+                if (nav.desiredVelocity == Vector3.zero)
+                    angle = 0;
+                else
+                    angle = Vector3.SignedAngle(transform.forward, nav.desiredVelocity, transform.up);
+            }
+
+            // Use angle deadzone (clearance) to avoid flickering when facing player.
+            //플레이어를 향하려 할때 깜빡 거리지 않도록 각도deadzone을 사용.
+            if (!controller.Strafing && Mathf.Abs(angle) < controller.generalStats.angleDeadzone)
+            {
+                transform.LookAt(transform.position + nav.desiredVelocity);
+                angle = 0f;
+                // Only trigger pending aim when NPC is facing player.
+                //플레이어를 향하고 있을때만 조준대기를 종료하고 조준을 활성화 합니다.
+                if (pendingAim && controller.focusSight)
+                {
+                    controller.Aiming = true;
+                    pendingAim = false;
+                }
+            }
+
+            // Strafe direction.
+            Vector3 direction = nav.desiredVelocity;
+            direction.y = 0.0f;
+            direction = direction.normalized;
+            direction = Quaternion.Inverse(transform.rotation) * direction;
+            // Setup values on animator.
+            Setup(speed, angle, direction);
+        }
 
         void Update()
         {
@@ -97,7 +171,7 @@ namespace FC
                 {
                     return;
                 }
-                Quaternion targetRotation = Quaternion.LookRotation(controller.personalTarget - spine.position);
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
                 // Apply parent bones initial rotation offsets
                 targetRotation *= Quaternion.Euler(initialRootRotation);
                 targetRotation *= Quaternion.Euler(initialHipsRotation);
@@ -109,6 +183,7 @@ namespace FC
 
                 // Simulate a simple bone constraint on upper body rotation.
                 // Is spine rotation relative to the hips is less than 60 degrees?
+                //엉덩이를 기준으로 척추 회전이 60도 미만의 경우는 계속 조준 가능.
                 if (Quaternion.Angle(frameRotation, hips.rotation) <= 60f)
                 {
                     // Set desired rotation.
@@ -118,6 +193,7 @@ namespace FC
                 // Avoid unrealistic rotation, related to hips and spine.
                 else
                 {
+                    // 각도가 70도 이상 틀어졌으면 잠시 조준을 풀었다가 다시 조준을 한다.. 자연스럽게 하기 위함.
                     // Deal with over twist stuck situation, due to async rotation of spine and hips.
                     if (timeCountAim == 0 && Quaternion.Angle(frameRotation, hips.rotation) > 70f)
                     {
@@ -151,59 +227,7 @@ namespace FC
             }
         }
 
-        // Set NPC orientation and speed on the animator contoller.
-        void NavAnimSetup()
-        {
-            float speed;
-            float angle;
-            // Grab speed per frame, based nav desired velocity and current forward
-            speed = Vector3.Project(nav.desiredVelocity, transform.forward).magnitude;
-            // Target is on sight, focus orientation on him.
-            if (controller.focusSight)
-            {
-                Vector3 dest = (controller.personalTarget - transform.position);
-                dest.y = 0;
-                angle = Vector3.SignedAngle(transform.forward, dest, transform.up);
-
-                //Calculate facing direction when strafing.
-                if (controller.Strafing)
-                {
-                    dest = dest.normalized;
-                    Quaternion targetStrafeRotation = Quaternion.LookRotation(dest);
-                    transform.rotation =
-                        Quaternion.Lerp(transform.rotation, targetStrafeRotation, turnSpeed * Time.time);
-                }
-            }
-            // Target is not on sight, use navmesh agent values as reference (ex.: waypoint navigation).
-            else
-            {
-                if (nav.desiredVelocity == Vector3.zero)
-                    angle = 0;
-                else
-                    angle = Vector3.SignedAngle(transform.forward, nav.desiredVelocity, transform.up);
-            }
-
-            // Use angle deadzone (clearance) to avoid flickering when facing player.
-            if (!controller.Strafing && Mathf.Abs(angle) < controller.generalStats.angleDeadzone)
-            {
-                transform.LookAt(transform.position + nav.desiredVelocity);
-                angle = 0f;
-                // Only trigger pending aim when NPC is facing player.
-                if (pendingAim && controller.focusSight)
-                {
-                    controller.Aiming = true;
-                    pendingAim = false;
-                }
-            }
-
-            // Strafe direction.
-            Vector3 direction = nav.desiredVelocity;
-            direction.y = 0.0f;
-            direction = direction.normalized;
-            direction = Quaternion.Inverse(transform.rotation) * direction;
-            // Setup values on animator.
-            Setup(speed, angle, direction);
-        }
+        
 
         // Set aim animation start as pending (called externally).
         public void ActivatePendingAim()
@@ -218,21 +242,6 @@ namespace FC
             controller.Aiming = false;
         }
 
-        // Set speed and orientation angle on the NPC animator, using damping values.
-        void Setup(float speed, float angle, Vector3 strafeDirection)
-        {
-            angle *= Mathf.Deg2Rad;
-            angularSpeed = angle / controller.generalStats.angleResponseTime;
 
-            anim.SetFloat(AnimatorKey.Speed, speed, controller.generalStats.speedDampTime, Time.deltaTime);
-            anim.SetFloat(AnimatorKey.AngularSpeed, angularSpeed, controller.generalStats.angularSpeedDampTime,
-                Time.deltaTime);
-
-            // Set 2D direction for strafing.
-            anim.SetFloat(AnimatorKey.Horizontal, strafeDirection.x, controller.generalStats.speedDampTime,
-                Time.deltaTime);
-            anim.SetFloat(AnimatorKey.Vertical, strafeDirection.z, controller.generalStats.speedDampTime,
-                Time.deltaTime);
-        }
     }
 }

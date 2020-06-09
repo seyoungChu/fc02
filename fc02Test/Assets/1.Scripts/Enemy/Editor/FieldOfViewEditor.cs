@@ -9,6 +9,18 @@ namespace FC
     [CustomEditor(typeof(StateController))]
     public class FieldOfViewEditor : Editor
     {
+        // Get rotated direction vector, relative to global or NPC forward direction.
+        Vector3 DirFromAngle(Transform transform, float angleInDegrees, bool angleIsGlobal)
+        {
+            if (!angleIsGlobal)
+            {
+                angleInDegrees += transform.eulerAngles.y;
+            }
+
+            return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0f,
+                Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
+        }
+        
         void OnSceneGUI()
         {
             //Debug.Log("?! FieldOfViewEditor OnSceneGUI Called");
@@ -21,7 +33,7 @@ namespace FC
             Handles.color = Color.white;
             // Draw perception area (circle)
             Handles.DrawWireArc(fov.transform.position, Vector3.up, Vector3.forward, 360, fov.perceptionRadius);
-            // Draw near perception area (half of perception radius)
+            //nearRadius Draw near perception area (half of perception radius) 
             Handles.DrawWireArc(fov.transform.position, Vector3.up, Vector3.forward, 360,
                 fov.perceptionRadius * 0.5f);
             // Define FOV arc boundaries
@@ -39,16 +51,6 @@ namespace FC
             }
         }
 
-        // Get rotated direction vector, relative to global or NPC forward direction.
-        Vector3 DirFromAngle(Transform transform, float angleInDegrees, bool angleIsGlobal)
-        {
-            if (!angleIsGlobal)
-            {
-                angleInDegrees += transform.eulerAngles.y;
-            }
-
-            return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0f,
-                Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
-        }
+        
     }
 }

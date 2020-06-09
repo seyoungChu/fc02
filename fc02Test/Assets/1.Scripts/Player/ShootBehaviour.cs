@@ -253,7 +253,8 @@ namespace FC
                 {
                     Vector3 destination = (ray.direction * 500f) - ray.origin;
                     // Handle shot effects without a specific target.
-                    DrawShoot(weapons[weapon].gameObject, destination, Vector3.up, null, false, false);
+                    DrawShoot(weapons[weapon].gameObject, destination, Vector3.up, null, false, 
+                        false);
                 }
 
                 // Play shot sound.

@@ -20,3 +20,10 @@ public enum ValueCheck { EQUALS, LESS, GREATER };
 public enum SimpleOperator { ADD, SUB, SET };
 public enum MouseButton { Left = 0, Right, Wheel };
 #endregion
+
+public enum WeaponType
+{
+    NONE,
+    SHORT,
+    LONG
+}

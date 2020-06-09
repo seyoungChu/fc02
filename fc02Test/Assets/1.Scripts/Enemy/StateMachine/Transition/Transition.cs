@@ -6,6 +6,7 @@ using FC;
 
 namespace FC
 {
+    //
     [Serializable]
     public class Transition
     {
