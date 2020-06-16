@@ -25,7 +25,7 @@ namespace FC
 		private HealthHUD healthUI;                    // The NPC health HUD.
 		private Animator anim;                                      // The NPC animator controller.
 		private StateController controller;                         // The NPC AI FSM controller.
-
+		private GameObject gameController;
 		private void Awake()
 		{
 			// Create the health HUD.
@@ -41,6 +41,7 @@ namespace FC
 			originalBarScale = healthBar.sizeDelta.x;
 			anim = GetComponent<Animator>();
 			controller = GetComponent<StateController>();
+			gameController = GameObject.FindGameObjectWithTag("GameController");
 
 			// Find the NPC weapon.
 			foreach (Transform child in anim.GetBoneTransform(HumanBodyBones.RightHand))
@@ -54,6 +55,46 @@ namespace FC
 			weapon = weapon.parent;
 		}
 
+		// Update health bar HUD to current NPC health.
+		private void UpdateHealthBar()
+		{
+			float scaleFactor = health / totalHealth;
+
+			healthBar.sizeDelta = new Vector2(scaleFactor * originalBarScale, healthBar.sizeDelta.y);
+		}
+
+		// Remove existing forces and set ragdoll parts as not kinematic to interact with physics.
+		private void RemoveAllForces()
+		{
+			foreach (Rigidbody member in GetComponentsInChildren<Rigidbody>())
+			{
+				member.isKinematic = false;
+				member.velocity = Vector3.zero;
+			}
+		}
+
+		// Remove unecessary components on killed NPC and set as dead.
+		public void Kill()
+		{
+			// Destroy all other MonoBehaviour scripts attached to the NPC.
+			foreach (MonoBehaviour mb in this.GetComponents<MonoBehaviour>())
+			{
+				if (this != mb)
+				{
+					Destroy(mb);
+				}
+			}
+			Destroy(this.GetComponent<NavMeshAgent>());
+			RemoveAllForces();
+			controller.focusSight = false;
+			anim.SetBool("Aim", false);
+			anim.SetBool("Crouch", false);
+			anim.enabled = false;
+			Destroy(weapon.gameObject);
+			Destroy(hud.gameObject);
+			isDead = true;
+		}
+
 		// Receive damage from shots taken.
 		public override void TakeDamage(Vector3 location, Vector3 direction, float damage, Collider bodyPart, GameObject origin = null)
 		{
@@ -63,7 +104,7 @@ namespace FC
 				// Default damage multiplier is 10x.
 				damage *= 10;
 				// Call headshot HUD callback, if any.
-				GameObject.FindGameObjectWithTag("GameController").SendMessage("HeadShotCallback", SendMessageOptions.DontRequireReceiver);
+				gameController.SendMessage("HeadShotCallback", SendMessageOptions.DontRequireReceiver);
 			}
 
 			// Create spouted blood particle on shot location.
@@ -89,45 +130,14 @@ namespace FC
 			{
 				// Kill the NPC?
 				if (!isDead)
+				{
 					Kill();
-
+				}
+				
 				// Shooting a dead body? Just apply shot force on the ragdoll part.
-				bodyPart.GetComponent<Rigidbody>().AddForce(100f * direction.normalized, ForceMode.Impulse);
-			}
-		}
-
-		// Remove unecessary components on killed NPC and set as dead.
-		public void Kill()
-		{
-			// Destroy all other MonoBehaviour scripts attached to the NPC.
-			foreach (MonoBehaviour mb in this.GetComponents<MonoBehaviour>())
-			{
-				if (this != mb)
-					Destroy(mb);
-			}
-			Destroy(this.GetComponent<NavMeshAgent>());
-			RemoveAllForces();
-			anim.enabled = false;
-			Destroy(weapon.gameObject);
-			Destroy(hud.gameObject);
-			isDead = true;
-		}
-
-		// Update health bar HUD to current NPC health.
-		private void UpdateHealthBar()
-		{
-			float scaleFactor = health / totalHealth;
-
-			healthBar.sizeDelta = new Vector2(scaleFactor * originalBarScale, healthBar.sizeDelta.y);
-		}
-
-		// Remove existing forces and set ragdoll parts as not kinematic to interact with physics.
-		private void RemoveAllForces()
-		{
-			foreach (Rigidbody member in GetComponentsInChildren<Rigidbody>())
-			{
-				member.isKinematic = false;
-				member.velocity = Vector3.zero;
+				Rigidbody rigid = bodyPart.GetComponent<Rigidbody>();
+				rigid.mass = 40;
+				rigid.AddForce(100f * direction.normalized, ForceMode.Impulse);
 			}
 		}
     }

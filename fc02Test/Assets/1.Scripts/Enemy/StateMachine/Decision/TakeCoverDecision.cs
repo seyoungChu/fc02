@@ -5,6 +5,12 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 장애물로 이동할 수 있는 상황인지 아닌지에 따라 판단.
+    /// 쏴야할 총알이 남아 있거나, 엄폐물로 이동하기 전에 대기시간이 남아 있거나,
+    /// 근처에 숨을만한 엄폐물이 없을경우 실패
+    /// 그외에는 장애물로 이동.
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Take Cover")]
     public class TakeCoverDecision : Decision
     {

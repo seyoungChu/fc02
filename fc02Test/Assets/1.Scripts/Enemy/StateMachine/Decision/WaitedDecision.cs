@@ -5,6 +5,9 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 랜덤 시간만큼 기다렸는가?
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Waited")]
     public class WaitedDecision : Decision
     {
@@ -13,11 +16,6 @@ namespace FC
         private float timeToWait;	 // Time to wait on current round.
         private float startTime;     // Timestamp of when the NPC began to wait.
 
-        // The decide function, called on Update() (State controller - current state - transition - decision).
-        public override bool Decide(StateController controller)
-        {
-            return (Time.time - startTime) >= timeToWait;
-        }
         // The decision on enable function, triggered once after a FSM state transition.
         public override void OnEnableDecision(StateController controller)
         {
@@ -26,6 +24,13 @@ namespace FC
             // Set start waiting time.
             startTime = Time.time;
         }
+        
+        // The decide function, called on Update() (State controller - current state - transition - decision).
+        public override bool Decide(StateController controller)
+        {
+            return (Time.time - startTime) >= timeToWait;
+        }
+        
     }
 
 }

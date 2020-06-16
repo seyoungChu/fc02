@@ -5,6 +5,9 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// target이 죽었는지 체크.
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Target Dead")]
     public class TargetDeadDecision : Decision
     {

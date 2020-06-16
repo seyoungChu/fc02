@@ -22,7 +22,23 @@ namespace FC
         {
             anim = this.GetComponent<Animator>();
         }
-
+        void OnAnimatorIK()
+        {
+            leftFootIKPos = anim.GetIKPosition(AvatarIKGoal.LeftFoot);
+            rightFootIKPos = anim.GetIKPosition(AvatarIKGoal.RightFoot);
+        }
+        
+        void PlayFootStep()
+        {
+            int oldIndex = index;
+            while (oldIndex == index)
+            {
+                index = Random.Range(0, stepSoundLists.Length);
+            }
+            //AudioSource.PlayClipAtPoint(stepSoundLists[index], transform.position, 0.1f);
+            SoundManager.Instance.PlayOneShotEffect((int)stepSoundLists[index],transform.position, 0.1f);
+        }
+        
         void Update()
         {
             float factor = 0.15f;
@@ -47,22 +63,7 @@ namespace FC
             }
         }
 
-        void PlayFootStep()
-        {
-            int oldIndex = index;
-            while (oldIndex == index)
-            {
-                index = Random.Range(0, stepSoundLists.Length);
-            }
-            //AudioSource.PlayClipAtPoint(stepSoundLists[index], transform.position, 0.1f);
-            SoundManager.Instance.PlayOneShotEffect((int)stepSoundLists[index],transform.position, 0.1f);
-        }
-
-        void OnAnimatorIK()
-        {
-            leftFootIKPos = anim.GetIKPosition(AvatarIKGoal.LeftFoot);
-            rightFootIKPos = anim.GetIKPosition(AvatarIKGoal.RightFoot);
-        }
+        
     }
 }
 

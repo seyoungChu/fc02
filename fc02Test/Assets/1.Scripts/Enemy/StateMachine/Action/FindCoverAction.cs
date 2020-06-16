@@ -5,13 +5,12 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 숨을수 있는 엄폐물이 없다면 가만히 서있지만 새로운 엄폐물이 있고 엄폐물보다 가깝다면 엄폐물 변경.
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Find Cover")]
     public class FindCoverAction : Action
     {
-        // The act function, called on Update() (State controller - current state - action).
-        public override void Act(StateController controller)
-        {
-        }
         // The action on enable function, triggered once after a FSM state transition.
         public override void OnReadyAction(StateController controller)
         {
@@ -41,6 +40,11 @@ namespace FC
             // Fullfill current round shots.
             controller.variables.currentShots = controller.variables.shotsInRound;
         }
+        // The act function, called on Update() (State controller - current state - action).
+        public override void Act(StateController controller)
+        {
+        }
+        
     }
 
 }

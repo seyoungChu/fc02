@@ -5,18 +5,12 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 타겟이 시야가 막히지 않은 상태에서 타겟이 시야각(viewAngle/2)사이에 있는가 판정.
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Look")]
     public class LookDecision : Decision
     {
-        // The decide function, called on Update() (State controller - current state - transition - decision).
-        public override bool Decide(StateController controller)
-        {
-            // Reset sight status on loop before checking.
-            controller.targetInSight = false;
-            // Check sight.
-            return Decision.CheckTargetsInRadius(controller, controller.viewRadius, MyHandleTargets);
-        }
-
         // The delegate for results of overlapping targets in look decision.
         private bool MyHandleTargets(StateController controller, bool hasTargets, Collider[] targetsInViewRadius)
         {
@@ -39,6 +33,17 @@ namespace FC
             // No target on sight.
             return false;
         }
+        
+        // The decide function, called on Update() (State controller - current state - transition - decision).
+        public override bool Decide(StateController controller)
+        {
+            // Reset sight status on loop before checking.
+            controller.targetInSight = false;
+            // Check sight.
+            return Decision.CheckTargetsInRadius(controller, controller.viewRadius, MyHandleTargets);
+        }
+
+
     }
 }
 

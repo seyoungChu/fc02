@@ -8,10 +8,6 @@ namespace FC
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Go To Shot Spot")]
     public class GoToShotSpotAction : Action
     {
-        // The act function, called on Update() (State controller - current state - action).
-        public override void Act(StateController controller)
-        {
-        }
         // The action on enable function, triggered once after a FSM state transition.
         public override void OnReadyAction(StateController controller)
         {
@@ -21,6 +17,12 @@ namespace FC
             controller.nav.speed = controller.generalStats.chaseSpeed;
             controller.enemyAnimation.AbortPendingAim();
         }
+        
+        // The act function, called on Update() (State controller - current state - action).
+        public override void Act(StateController controller)
+        {
+        }
+        
     }
 }
 

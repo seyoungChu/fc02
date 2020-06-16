@@ -5,6 +5,10 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 공격과 동시에 이동하는 액션이며, 일단 회전할때는 회전에 집중하고 회전이 끝나면
+    /// strafing 이 활성화된다.
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Focus Move")]
     public class FocusMoveAction : Action
     {
@@ -14,6 +18,16 @@ namespace FC
         private Vector3 currentDest;   // Current navigation destination.
         private bool aligned;          // Is the NPC orientation aligned to the target?
 
+        // The action on enable function, triggered once after a FSM state transition.
+        public override void OnReadyAction(StateController controller)
+        {
+            // Setup initial values for the action.
+            controller.hadClearShot = controller.haveClearShot = false;
+            currentDest = controller.nav.destination;
+            controller.focusSight = true;
+            aligned = false;
+        }
+        
         // The act function, called on Update() (State controller - current state - action).
         public override void Act(StateController controller)
         {
@@ -42,20 +56,15 @@ namespace FC
                     controller.Aiming = controller.haveClearShot;
                     // NPC is not returning to cover, will stop to shot.
                     if (controller.haveClearShot && !Equals(currentDest, controller.CoverSpot))
+                    {
                         controller.nav.destination = controller.transform.position;
+                    }
+                        
                 }
                 controller.hadClearShot = controller.haveClearShot;
             }
         }
-        // The action on enable function, triggered once after a FSM state transition.
-        public override void OnReadyAction(StateController controller)
-        {
-            // Setup initial values for the action.
-            controller.hadClearShot = controller.haveClearShot = false;
-            currentDest = controller.nav.destination;
-            controller.focusSight = true;
-            aligned = false;
-        }
+        
     }
 }
 

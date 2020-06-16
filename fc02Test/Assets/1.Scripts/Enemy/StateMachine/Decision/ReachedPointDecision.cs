@@ -5,6 +5,9 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// navMeshAgent에서 남은 거리가 멈추는 중일정도로 얼마 남지 않았거나, 경로를 검색중이 아니라면 true
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Decisions/Reached Point")]
     public class ReachedPointDecision : Decision
     {
