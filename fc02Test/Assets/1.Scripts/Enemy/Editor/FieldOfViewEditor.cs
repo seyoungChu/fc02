@@ -50,7 +50,5 @@ namespace FC
                 Handles.DrawLine(fov.enemyAnimation.gunMuzzle.position, fov.personalTarget);
             }
         }
-
-        
     }
 }

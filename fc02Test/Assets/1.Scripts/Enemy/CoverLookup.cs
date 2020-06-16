@@ -6,6 +6,10 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 숨을 만한 곳을 찾아주는 클래스.
+    /// 플레이어보다 멀리 있는건 제외.
+    /// </summary>
     public class CoverLookup : MonoBehaviour
     {
         private List<Vector3[]> allCoverSpots; // The level avaliable cover spots.
@@ -34,6 +38,7 @@ namespace FC
         private void ProcessPoint(List<Vector3> ls, Vector3 naivePoint, float range)
         {
             NavMeshHit hit;
+            //포지션 샘플링.
             if (NavMesh.SamplePosition(naivePoint, out hit, range, NavMesh.AllAreas))
             {
                 ls.Add(hit.position);
@@ -80,8 +85,8 @@ namespace FC
 
                 // Calculate spot points around the cover.
                 float edgeFactor = 0.75f;
-                ProcessPoint(bounds, col.bounds.center + deslocRight + deslocForward * edgeFactor, range);
-                ProcessPoint(bounds, col.bounds.center + deslocForward + deslocRight * edgeFactor, range);
+                ProcessPoint(bounds, col.bounds.center + deslocRight + deslocForward * edgeFactor, range);//우상단.
+                ProcessPoint(bounds, col.bounds.center + deslocForward + deslocRight * edgeFactor, range);//
                 ProcessPoint(bounds, col.bounds.center + deslocForward, range);
                 ProcessPoint(bounds, col.bounds.center + deslocForward - deslocRight * edgeFactor, range);
                 ProcessPoint(bounds, col.bounds.center - deslocRight + deslocForward * edgeFactor, range);

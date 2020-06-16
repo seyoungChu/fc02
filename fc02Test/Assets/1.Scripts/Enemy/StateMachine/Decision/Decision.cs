@@ -5,6 +5,11 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 조건 체크하는 클래스.
+    /// 조건 체크를 위해 특정 위치로 부터 원하는 검색 반경에 있는 충돌체를 찾아서 그 안에 타겟이 있는지
+    /// 확인하는 기능
+    /// </summary>
     public abstract class Decision : ScriptableObject
     {
         // The decide function, called on Update() (State controller - current state - transition - decision).
@@ -23,9 +28,10 @@ namespace FC
         {
             // Target is dead, ignore sense triggers.
             if (controller.aimTarget.root.GetComponent<HealthBase>().isDead)
+            {
                 return false;
-            // Target is alive.
-            else
+            }
+            else // Target is alive.
             {
                 Collider[] targetsInRadius =
                     Physics.OverlapSphere(controller.transform.position, radius, controller.generalStats.targetMask);

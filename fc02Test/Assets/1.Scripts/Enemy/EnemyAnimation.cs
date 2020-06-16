@@ -6,15 +6,22 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 이동 방향에따라 애니메이션 파라메터 값 수정.
+    /// 조준시 애니메이션 컨트롤.
+    /// </summary>
     public class EnemyAnimation : MonoBehaviour
     {
-        [HideInInspector] public Animator anim; // Reference to the NPC Animator component.
-
+        [HideInInspector] 
+        public Animator anim; // Reference to the NPC Animator component.
+        
         [HideInInspector]
         public float currentAimAngleGap; // Gap between current aim direction and on target aim direction
 
-        [HideInInspector] public Transform gunMuzzle; // NPC weapon gun muzzle reference.
-        [HideInInspector] public float angularSpeed; // NPC angular speed (used to turn).
+        [HideInInspector] 
+        public Transform gunMuzzle; // NPC weapon gun muzzle reference.
+        [HideInInspector] 
+        public float angularSpeed; // NPC angular speed (used to turn).
 
         private StateController controller; // Reference to the NPC state controller (with the FSM).
         private UnityEngine.AI.NavMeshAgent nav; // Reference to the NPC NavMesh agent.
@@ -217,18 +224,18 @@ namespace FC
                 timeCountGuard = 0;
             }
             // Guard position adjustments.
+            //조준중이 아닐때.
             else
             {
                 lastRotation = spine.rotation;
                 // Slowly reduce aim offset when exiting aim position.
+                // 천천히 원래대로 돌아온다.
                 spine.rotation *= Quaternion.Slerp(Quaternion.Euler(VectorHelper.ToVector(controller.classStats.AimOffset)),
                     Quaternion.identity, timeCountGuard);
                 timeCountGuard += Time.deltaTime;
             }
         }
-
         
-
         // Set aim animation start as pending (called externally).
         public void ActivatePendingAim()
         {

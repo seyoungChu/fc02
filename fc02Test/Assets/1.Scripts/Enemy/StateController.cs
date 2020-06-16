@@ -6,7 +6,11 @@ using FC;
 
 namespace FC
 {
-
+    /// <summary>
+    /// state -> action update -> transition check
+    /// state에 필요한 기능들. 애니메이션 콜백들..
+    /// 시야 체크. 찾아논 다른 숨을 장소 검색. 
+    /// </summary>
     public class StateController : MonoBehaviour
     {
         [Tooltip("NPC common stats.")] public GeneralStats generalStats;
