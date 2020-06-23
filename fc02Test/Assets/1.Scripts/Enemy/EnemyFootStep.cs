@@ -7,7 +7,6 @@ namespace FC
 {
     public class EnemyFootStep : MonoBehaviour
     {
-        //public AudioClip[] stepClips;
         public SoundList[] stepSoundLists;
 
         private int index;
@@ -35,7 +34,6 @@ namespace FC
             {
                 index = Random.Range(0, stepSoundLists.Length);
             }
-            //AudioSource.PlayClipAtPoint(stepSoundLists[index], transform.position, 0.1f);
             SoundManager.Instance.PlayOneShotEffect((int)stepSoundLists[index],transform.position, 0.1f);
         }
         

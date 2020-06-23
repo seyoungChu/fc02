@@ -5,6 +5,7 @@ using FC;
 
 namespace FC
 {
+    //특정 지점으로 이동.
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Go To Shot Spot")]
     public class GoToShotSpotAction : Action
     {

@@ -27,8 +27,8 @@ namespace FC
         private float originalBarScale;
         private bool critical;
         
-        //private BlinkHUD criticalHud; -> 2부에서.
-        //private HurtHUD hurtHUD; -> 2부에서.
+        private BlinkHUD criticalHud; //-> 2부에서.
+        private HurtHUD hurtHUD; //-> 2부에서.
 
         void Awake()
         {
@@ -41,9 +41,9 @@ namespace FC
             originalBarScale = healthBar.sizeDelta.x;
             healthLabel.text = "" + (int)health;
             
-            //criticalHud = healthHUD.Find("Bloodframe").GetComponent<BlinkHUD>(); -> 2부에서.
-            //hurtHUD = this.gameObject.AddComponent<HurtHUD>(); -> 2부에서.
-            //hurtHUD.Setup(healthHUD, hurtPrefab, decayFactor, this.transform); -> 2부에서.
+            criticalHud = healthHUD.Find("Bloodframe").GetComponent<BlinkHUD>(); //-> 2부에서.
+            hurtHUD = this.gameObject.AddComponent<HurtHUD>(); //-> 2부에서.
+            hurtHUD.Setup(healthHUD, hurtPrefab, decayFactor, this.transform); //-> 2부에서.
         }
 
         void Update()
@@ -96,10 +96,10 @@ namespace FC
 
             UpdateHealthBar();
 
-            // if (hurtPrefab && healthHUD) -> 2부에서.
-            // {
-            //     hurtHUD.DrawHurtUI(origin.transform, origin.GetHashCode()); -> 2부에서.
-            // }
+            if (hurtPrefab && healthHUD) //-> 2부에서.
+            {
+                hurtHUD.DrawHurtUI(origin.transform, origin.GetHashCode()); //-> 2부에서.
+            }
                 
 
             if (health <= 0)
@@ -109,7 +109,7 @@ namespace FC
             else if (health <= criticalHealth && !critical)
             {
                 critical = true;
-                //criticalHud.StartBlink(); -> 2부에서.
+                criticalHud.StartBlink();// -> 2부에서.
             }
 
             SoundManager.Instance.PlayOneShotEffect((int)hitSound, location, 0.1f);

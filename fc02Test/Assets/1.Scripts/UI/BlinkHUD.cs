@@ -33,8 +33,8 @@ namespace FC
             gameObject.SetActive(false);
             dyingSaturation = -30f;
             dyingBrightness = -10f;
-            GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-            PostProcessVolume postProcessVolume = gameController.GetComponent<PostProcessVolume>();
+            GameObject camera = Camera.main.gameObject;
+            PostProcessVolume postProcessVolume = camera.GetComponent<PostProcessVolume>();
             postProcessVolume.profile.TryGetSettings(out colorGradingLayer);
             postProcessVolume.profile.TryGetSettings(out bloomLayer);
         }

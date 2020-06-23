@@ -55,6 +55,7 @@ namespace FC
                     // Aim on target if sight is clear.
                     controller.Aiming = controller.haveClearShot;
                     // NPC is not returning to cover, will stop to shot.
+                    // 사격이 가능하다면 현재 이동 목표가 엄폐물과 달라도 일단 이동을 시키지 않는다.
                     if (controller.haveClearShot && !Equals(currentDest, controller.CoverSpot))
                     {
                         controller.nav.destination = controller.transform.position;

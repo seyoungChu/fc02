@@ -14,6 +14,11 @@ namespace FC
     {
         private Vector3 lastPos, currentPos;   // Last and current evidence positions.
         
+        // The decision on enable function, triggered once after a FSM state transition.
+        public override void OnEnableDecision(StateController controller)
+        {
+            lastPos = currentPos = Vector3.positiveInfinity;
+        }
         // The delegate for results of overlapping targets in hear decision.
         private bool MyHandleTargets(StateController controller, bool hasTargets, Collider[] targetsInHearRadius)
         {
@@ -39,12 +44,6 @@ namespace FC
             return false;
         }
         
-        // The decision on enable function, triggered once after a FSM state transition.
-        public override void OnEnableDecision(StateController controller)
-        {
-            lastPos = currentPos = Vector3.positiveInfinity;
-        }
-
         // The decide function, called on Update() (State controller - current state - transition - decision).
         public override bool Decide(StateController controller)
         {

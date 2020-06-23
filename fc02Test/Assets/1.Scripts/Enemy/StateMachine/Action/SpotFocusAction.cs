@@ -5,6 +5,7 @@ using FC;
 
 namespace FC
 {
+    //특정 지점을 타겟팅.
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Spot Focus")]
     public class SpotFocusAction : Action
     {

@@ -19,12 +19,14 @@ namespace FC
         // Cast sphere for near obstacles, and line to personal target (not the aim target) for clean shot.
         private bool HaveClearShot(StateController controller)
         {
-            Vector3 shotOrigin = controller.transform.position + Vector3.up * (controller.generalStats.aboveCoverHeight + controller.nav.radius);
+            Vector3 shotOrigin = controller.transform.position + 
+                                 Vector3.up * (controller.generalStats.aboveCoverHeight + controller.nav.radius);
             Vector3 shotDirection = controller.personalTarget - shotOrigin;
 
             // Cast sphere in target direction to check for obstacles in near radius.
             bool blockedShot = Physics.SphereCast(shotOrigin, controller.nav.radius, shotDirection, out RaycastHit hit,
-                controller.nearRadius, controller.generalStats.coverMask | controller.generalStats.obstacleMask);
+                controller.nearRadius, 
+                controller.generalStats.coverMask | controller.generalStats.obstacleMask);
             if (!blockedShot)
             {
                 // No near obstacles, cast line to target position and check for clear shot.

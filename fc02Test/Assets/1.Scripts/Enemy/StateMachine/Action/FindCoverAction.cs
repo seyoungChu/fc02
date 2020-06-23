@@ -7,6 +7,7 @@ namespace FC
 {
     /// <summary>
     /// 숨을수 있는 엄폐물이 없다면 가만히 서있지만 새로운 엄폐물이 있고 엄폐물보다 가깝다면 엄폐물 변경.
+    /// 총알 장전도 해준다.
     /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Find Cover")]
     public class FindCoverAction : Action
@@ -28,7 +29,8 @@ namespace FC
                 return;
             }
             // Closer cover spot, update spot position.
-            else if ((controller.personalTarget - potentialCover).sqrMagnitude < (controller.personalTarget - controller.CoverSpot).sqrMagnitude
+            else if ((controller.personalTarget - potentialCover).sqrMagnitude < 
+                     (controller.personalTarget - controller.CoverSpot).sqrMagnitude
                      && !controller.IsNearOtherSpot(potentialCover, controller.nearRadius))
             {
                 controller.coverHash = (int)nextCoverData[0];

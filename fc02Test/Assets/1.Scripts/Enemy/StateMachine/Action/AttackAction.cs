@@ -5,6 +5,13 @@ using FC;
 
 namespace FC
 {
+    /// <summary>
+    /// 총 4단계에 걸쳐 사격 :
+    /// 1. 조준중이고 조준 유효각도안에 타겟이있거나 가깝냐
+    /// 2. 발사 간격 딜레이가 되었다면 애니메이션 재생
+    /// 3. 충돌 검출을 하는데 약간의 사격시 충격도 더해준다.
+    /// 4. 총구 이펙트 및 총알 이펙트를 생성해준다.
+    /// </summary>
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Attack")]
     public class AttackAction : Action
     {

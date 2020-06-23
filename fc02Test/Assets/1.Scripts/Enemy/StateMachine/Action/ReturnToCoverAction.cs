@@ -5,6 +5,7 @@ using FC;
 
 namespace FC
 {
+    //포커싱을 일단 멈추고 장애물로 다시 이동.
     // The return to cover spot action.
     [CreateAssetMenu(menuName = "FC/PluggableAI/Actions/Return to Cover")]
     public class ReturnToCoverAction : Action

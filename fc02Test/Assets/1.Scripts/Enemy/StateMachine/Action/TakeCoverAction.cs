@@ -42,7 +42,6 @@ namespace FC
             {
                 controller.transform.rotation = Quaternion.Slerp(controller.transform.rotation, targetRotation, 10f * Time.deltaTime);
             }
-                
         }
         
         // The act function, called on Update() (State controller - current state - action).
